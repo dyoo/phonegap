@@ -23,6 +23,8 @@ package com.phonegap.demo;
  */
 import java.io.IOException;
 import java.util.TimeZone;
+import java.util.List;
+
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -58,6 +60,7 @@ public class PhoneGap {
 	private AudioHandler audio;
 	private ToneHandler tones;
 	private PowerManager power;
+        private Telephony telephony;
 	private PowerManager.WakeLock lock;
 	private ArgTable arguments;
     
@@ -73,6 +76,7 @@ public class PhoneGap {
 		tones = new ToneHandler();
 		uuid = getUuid();
 		power = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+		this.telephony = new Telephony(ctx);
 		lock = null;
 	}
 
@@ -404,12 +408,25 @@ public class PhoneGap {
     	}
     }
 
+
+
+
+    public List<CellInfo> getSignalStrengths() {
+	return this.telephony.getSignalStrengths();
+    }
+
+
+
+
+
     public void stop() {
     	audio.clearCache();
 //    	stopAllAudio();
     	stopDTMF();
     	releaseWakeLock();
     }
+
+
     
 }
 

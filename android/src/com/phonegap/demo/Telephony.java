@@ -1,22 +1,30 @@
 package com.phonegap.demo;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaRecorder;
-import android.media.MediaPlayer.OnBufferingUpdateListener;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnPreparedListener;
-import android.util.Log;
-import android.webkit.WebView;
+// import android.telephony.TelephonyManager;
+// import android.telephony.NeighboringCellInfo;
+
+import java.util.List;
+import java.util.ArrayList;
 
 public class Telephony {
-	private MediaRecorder recorder;
+    private Context ctx;
+
+    public Telephony(Context ctx) {
+	this.ctx = ctx;
+    }
+
+
+    public List<CellInfo> getSignalStrengths() {
+// 	TelephonyManager mgr = (TelephonyManager)
+// 	    ctx.getSystemService(Context.TELEPHONY_SERVICE);
+
+	//	List infos = mgr.getNeighboringCellInfo();
+
+	List result = new ArrayList();
+	return result;
+    }
+
+
 }
