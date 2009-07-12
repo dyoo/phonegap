@@ -410,7 +410,8 @@ public class PhoneGap {
 
 
 
-
+    // getSignalStrengths: (listof CellInfo)
+    // Gets the signal strengths.
     public List<CellInfo> getSignalStrengths() {
 	return this.telephony.getSignalStrengths();
     }
