@@ -15,24 +15,26 @@ import android.util.Log;
 public class GeoBroker {
 	private WebView mAppView;
 	private Context mCtx;
+	private ArgTable arguments;
 	private HashMap<String, GeoListener> geoListeners;
 	
-	GeoBroker(Context ctx, WebView view)
+	GeoBroker(Context ctx, WebView view, ArgTable args)
 	{
 		mCtx = ctx;
 		mAppView = view;
+		arguments = args;
 		geoListeners = new HashMap<String, GeoListener>();
 	}
 	
 	public void getCurrentLocation()
 	{
-		GeoListener listener = new GeoListener("global", mCtx, 10000, mAppView);
+		GeoListener listener = new GeoListener("global", mCtx, 10000, mAppView, arguments);
 	}
 	
 	public String start(int freq, String key)
 	{
 //		Log.d("GeoBroker start", "Making new GeoListener with freq " + freq + " and key " + key);
-		GeoListener listener = new GeoListener(key, mCtx, freq, mAppView);
+		GeoListener listener = new GeoListener(key, mCtx, freq, mAppView, arguments);
 		geoListeners.put(key, listener);
 		return key;
 	}

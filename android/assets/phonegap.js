@@ -81,9 +81,11 @@
 	 */
 	this.lastOrientation = null;
 
-	this.shakeListeners = [];
+	this.shakeListeners = {};
 	this.orientListeners = [];
 	this.accelListeners = [];
+    
+    	this.shakeIDCount = 0;
     }
     
     /**
@@ -95,6 +97,7 @@
      * @param {AccelerationOptions} options The options for getting the accelerometer data
      * such as timeout.
      */
+/*
     Accelerometer.prototype.getCurrentAcceleration = function(successCallback, errorCallback, options) {
     	// If the acceleration is available then call success
     	// If the acceleration is not available then call error
@@ -109,6 +112,7 @@
 		errorCallback();
 	}
     }
+*/
 
     /**
      * Asynchronously aquires the current orientation.
@@ -119,6 +123,7 @@
      * @param {OrientationOptions} options The options for getting the accelerometer data
      * such as timeout.
      */
+/*
     Accelerometer.prototype.getCurrentOrientation = function(successCallback, errorCallback, options) {
 	// If the orientation is available then call success
     	// If the orientation is not available then call error
@@ -133,6 +138,7 @@
 		errorCallback();
 	}
     }
+*/
     
     /**
      * Asynchronously aquires the acceleration repeatedly at a given interval.
@@ -188,51 +194,58 @@
      * This class provides access to the device media, interfaces to both sound and video
      * @constructor
      */
-    function Media() {
+    function Audio() {
  //   	this.src = src;
+    	this.callbacks = {};
     }
     
-    Media.prototype.play = function(file) {
-	Device.startPlayingAudio(file);
+    Audio.prototype.play = function(file) {
     }
     
-    Media.prototype.pause = function(file) {
-	Device.pauseAudio(file);
+    Audio.prototype.pause = function(file) {
     }
 
-    Media.prototype.resume = function(file) {
-	Device.resumeAudio(file);
+    Audio.prototype.resume = function(file) {
     }
     
-    Media.prototype.stop = function(file) {
-	Device.stopPlayingAudio(file);
+    Audio.prototype.stop = function(file) {
     }
 
-    Media.prototype.playDTMF = function(tone) {
-	Device.playDTMF(tone);
+    Audio.prototype.stopAll = function() {
     }
 
-    Media.prototype.stopDTMF = function() {
-	Device.stopDTMF();
+    Audio.prototype.increaseMusicVolume = function() {
+    }
+
+    Audio.prototype.decreaseMusicVolume = function() {
+    }
+
+    Audio.prototype.setMusicVolume = function() {
+    }
+
+    Audio.prototype.playDTMF = function(tone) {
+    }
+
+    Audio.prototype.stopDTMF = function() {
     }
 
     
     /**
-     * This class contains information about any Media errors.
+     * This class contains information about any Audio errors.
      * @constructor
      */
-    function MediaError() {
+    function AudioError() {
     	this.code = null,
     	this.message = "";
     }
     
-    MediaError.MEDIA_ERR_ABORTED 		= 1;
-    MediaError.MEDIA_ERR_NETWORK 		= 2;
-    MediaError.MEDIA_ERR_DECODE 		= 3;
-    MediaError.MEDIA_ERR_NONE_SUPPORTED 	= 4;
+    AudioError.MEDIA_ERR_ABORTED 		= 1;
+    AudioError.MEDIA_ERR_NETWORK 		= 2;
+    AudioError.MEDIA_ERR_DECODE 		= 3;
+    AudioError.MEDIA_ERR_NONE_SUPPORTED 	= 4;
     
     
-    if (typeof navigator.audio == "undefined") navigator.audio = new Media();
+    if (typeof navigator.audio == "undefined") navigator.audio = new Audio();
     
     
     /**
@@ -599,40 +612,78 @@ Notification.prototype.beep = function(count, volume)
 
 
 /**
- * Media play, pause, stop, and result methods for the android audio
+ * Audio play, pause, stop, and result methods for the android audio
  *
  * Also methods to play and stop DTMF tones
  */
-Media.prototype.play = function(file) {
+Audio.prototype.playMusic = function(file, endCallback) {
     Device.startPlayingAudio(file);
+    this.callbacks[file] = endCallback;
 }
     
-Media.prototype.pause = function(file) {
+Audio.prototype.pauseMusic = function(file) {
     Device.pauseAudio(file);
 }
 
-Media.prototype.resume = function(file) {
+Audio.prototype.resumeMusic = function(file) {
     Device.resumeAudio(file);
 }
     
-Media.prototype.stop = function(file) {
+Audio.prototype.stopMusic = function(file) {
     Device.stopPlayingAudio(file);
+    delete this.callbacks[file];
 }
 
-Media.prototype.stopAll = function() {
-    Console.println("Stopping all audio (phonegap.js)");
-    Console.println("typeof Device = " + (typeof Device));
-    Console.println("typeof Device.stopAllAudio = " + (typeof Device.stopAllAudio));
+Audio.prototype.stopAllMusic = function() {
     Device.stopAllAudio();
+    this.callbacks = {};
 }
 
-Media.prototype.playDTMF = function(tone) {
+Audio.prototype.musicFinished = function() {
+    var file = Args.get("finishedMusicFile");
+//    Console.println("In musicFinshed for " + file);
+//    Console.println("typeof this.callbacks[file] = " + typeof this.callbacks[file]);
+
+    if (typeof this.callbacks[file] != "undefined") {
+    	this.callbacks[file]();
+    }
+    delete this.callbacks[file];
+}
+
+Audio.prototype.increaseMusicVolume = function(flags) {
+    var theFlags = (typeof flags == "undefined")? Audio.FLAG_NONE : flags;
+    Device.increaseMusicVolume(theFlags);
+}
+
+Audio.prototype.decreaseMusicVolume = function(flags) {
+    var theFlags = (typeof flags == "undefined")? Audio.FLAG_NONE : flags;
+    Device.decreaseMusicVolume(theFlags);
+}
+
+Audio.prototype.setMusicVolume = function(volume, flags) {
+    var theFlags = (typeof flags == "undefined")? Audio.FLAG_NONE : flags;
+    Device.setMusicVolume(volume, theFlags);
+}
+
+Audio.prototype.playDTMF = function(tone) {
     Device.playDTMF(tone);
 }
 
-Media.prototype.stopDTMF = function() {
+Audio.prototype.stopDTMF = function() {
     Device.stopDTMF();
 }
+
+Audio.prototype.startMusicPlayer = function() {
+    Device.startMusicPlayer();
+}
+
+// Flags for volume controls
+Audio.FLAG_NONE = 0;
+Audio.FLAG_SHOW_UI = 1;
+Audio.FLAG_ALLOW_RINGER_MODES = 2;
+Audio.FLAG_PLAY_SOUND = 4;
+Audio.FLAG_REMOVE_SOUND_AND_VIBRATE = 8;
+Audio.FLAG_VIBRATE = 16;
 
 
 /**
@@ -649,11 +700,12 @@ Geolocation.prototype.getCurrentPosition = function(successCallback, errorCallba
 }
 
 // Run the global callback
-Geolocation.gotCurrentPosition = function(lat, lng)
-{
+Geolocation.gotCurrentPosition = function() {
+    var lat = Args.get("gpsLat");
+    var lng = Args.get("gpsLng");
 //  Console.println("Got position " + lat + ", " + lng);
   
-  if (lat == "undefined" || lng == "undefined")
+  if (lat == null || lng == null)
   {
     this.fail();
   }
@@ -675,22 +727,22 @@ Geolocation.gotCurrentPosition = function(lat, lng)
 
 Geolocation.prototype.watchPosition = function(successCallback, errorCallback, options)
 {
-  var frequency = (options != undefined)? options.frequency : 10000;
+    var frequency = (options != undefined)? options.frequency : 10000;
 
-//  Console.println("options.frequency = " + ((options != undefined)? options.frequency : 10000));
+//    Console.println("options.frequency = " + ((options != undefined)? options.frequency : 10000));
 
-  if (!this.listeners)
-  {
-	Console.println("Geoloc making listeners list in watchPosition");
-      this.listeners = [];
-  }
+    if (!this.listeners)
+    {
+    	Console.println("Geoloc making listeners list in watchPosition");
+    	this.listeners = [];
+    }
 
-  var key = this.listeners.push( {"success" : successCallback, "fail" : errorCallback }) - 1;
+    var key = this.listeners.push( {"success" : successCallback, "fail" : errorCallback }) - 1;
   
-//  Console.logd("Geoloc watchPosition", "Starting to watch position. key " + key + ", freq " + frequency);
+//    Console.logd("Geoloc watchPosition", "Starting to watch position. key " + key + ", freq " + frequency);
 
-  // TO-DO: Get the names of the method and pass them as strings to the Java.
-  return Geo.start(frequency, key);
+    // TODO: Get the names of the method and pass them as strings to the Java.
+    return Geo.start(frequency, key);
 }
 
 /*
@@ -699,12 +751,24 @@ Geolocation.prototype.watchPosition = function(successCallback, errorCallback, o
  */
 Geolocation.prototype.success = function(key, lat, lng)
 {
-//  Console.println("Success for finding location " + lat + ", " + lng + " with key " + key);
-//  Console.println("typeof this.listeners = " + (typeof this.listeners));
-  p = {};
-  p.latitude = lat;
-  p.longitude = lng;
-  this.listeners[key].success(p);
+    var key = Args.get("gpsId");
+    var lat = Args.get("gpsLat");
+    var lng = Args.get("gpsLng");
+
+    Console.println("Success for finding location " + lat + ", " + lng + " with key " + key);
+//    Console.println("typeof this.listeners = " + (typeof this.listeners));
+
+    if (key == null) {
+	    Console.logd("PhoneGap", "Geolocation key undefined in Geolocation.success");
+    }
+    else if (lat == null || lng == null) {
+	    this.listeners[key].fail();
+    }
+
+    p = {};
+    p.latitude = lat;
+    p.longitude = lng;
+    this.listeners[key].success(p);
 }
 
 Geolocation.prototype.fail = function(key)
@@ -718,7 +782,7 @@ Geolocation.prototype.clearWatch = function(watchId)
 }
 
 /* Identical to the iPhone, except we have to create this in the JS */
-
+/*
 _accel = {};
 _accel.x = null;
 _accel.y = null;
@@ -735,9 +799,9 @@ var lastRapidChange = -1;
 var lastShake = -1;
 
 // the magnitude of the difference vector required to be considered a "rapid acceleration change"
-var changeMagnitude = 6.75;
+var changeMagnitude = 7.25;
 // the time window for two rapid acceleration changes to be considered a shake (milliseconds)
-var shakeSpan = 500;
+var shakeSpan = 250;
 // the minimum time between shakes (milliseconds)
 var shakeDelay = 1000;
 
@@ -757,13 +821,13 @@ function gotAcceleration(x,y,z) {
     	if (curTime - lastRapidChange < shakeSpan && curTime - lastShake > shakeDelay) {
 //    	    Console.println("Phone got shaken at " + curTime);
     	    lastShake = curTime;
-    		try {
-				navigator.accelerometer.gotShaken();
-			} catch (e) {
-			    Console.logd("PhoneGap", e.toString());
-		    }
+    	    try {
+    	    	navigator.accelerometer.gotShaken();
+    	    } catch (e) {
+    	    	Console.logd("PhoneGap", e.toString());
+    	    }
     	}
-//		Console.println("Changing lastRapidChange to " + curTime);
+//    	Console.println("Changing lastRapidChange to " + curTime);
     	lastRapidChange = curTime;
     }
 
@@ -777,12 +841,27 @@ function gotOrientation(azimuth, pitch, roll) {
     _orient.pitch = pitch;
     _orient.roll = roll;
 }
+*/
+
+function emptyHash(h) {
+    for (k in h) {
+    	return false;
+    }
+    return true;
+}
 
 Accelerometer.prototype.allListenersEmpty = function() {
-    return (this.shakeListeners.length == 0 &&
+    return (emptyHash(this.shakeListeners) &&
             this.orientListeners.length == 0 &&
             this.accelListeners.length == 0);
 }
+
+// the magnitude of the difference vector required to be considered a "rapid acceleration change"
+var defChangeMagnitude = 7.25;
+// the time window for two rapid acceleration changes to be considered a shake (milliseconds)
+var defShakeSpan = 250;
+// the minimum time between shakes (milliseconds)
+var defShakeDelay = 1000;
 
 Accelerometer.prototype.watchShake = function(successCallback, errorCallback, options) {
 //    if (!this.shakeListeners) {
@@ -790,14 +869,37 @@ Accelerometer.prototype.watchShake = function(successCallback, errorCallback, op
 //    }
     Accel.start();
 
+    var shakeUID = "shakeListener" + (this.shakeIDCount++);
+    var changeMag = defChangeMagnitude;
+    var shakeSpan = defShakeSpan;
+    var shakeDelay = defShakeDelay;
+
+    if (typeof options != "undefined") {
+    	if (typeof options.changeMagnitude != "undefined")
+    	    changeMag = options.changeMagnitude;
+    	if (typeof options.shakeSpan != "undefined")
+    	    shakeSpan = options.shakeSpan;
+    	if (typeof options.shakeDelay != "undefined")
+    	    shakeDelay = options.shakeDelay;
+    }
+
     var callBacks = { "success" : successCallback, "fail" : errorCallback };
-    this.shakeListeners.push(callBacks);
+    this.shakeListeners[shakeUID] = callBacks;
+
+    Accel.addShakeListener(shakeUID, changeMag, shakeSpan, shakeDelay);
+
     var that = this;
     return function() {
-    	var index = that.shakeListeners.indexOf(callBacks);
+    	if (typeof that.shakeListeners[shakeUID] != "undefined") {
+		delete that.shakeListeners[shakeUID];
+	}
+
+	Accel.removeShakeListener(shakeUID);
+    	
+//    	var index = that.shakeListeners.indexOf(callBacks);
 //    	Console.println("Removing the shake listener at index " + index);
-    	if (index != -1)
-    	    that.shakeListeners.splice(index, 1);
+//    	if (index != -1)
+ //   	    that.shakeListeners.splice(index, 1);
 
     	if (navigator.accelerometer.allListenersEmpty()) {
     	    Console.println("Stopping Accel");
@@ -807,9 +909,21 @@ Accelerometer.prototype.watchShake = function(successCallback, errorCallback, op
 }
 
 Accelerometer.prototype.gotShaken = function() {
-    for (var i = 0; i < this.shakeListeners.length; i++) {
-    	this.shakeListeners[i].success();
+//    Console.println("gotShaken called");
+
+    var shakenUIDs = Args.get("shakeIDs");
+
+    for (var i = 0; i < shakenUIDs.size(); i++) {
+	    var callback = this.shakeListeners[shakenUIDs.get(i)];
+
+	    if (typeof callback != "undefined") {
+		    callback.success();
+	    }
     }
+
+//    for (var i = 0; i < this.shakeListeners.length; i++) {
+//    	this.shakeListeners[i].success();
+//    }
 }
 
 //Accelerometer.prototype.stopShakeWatch = function(shakeId) {
@@ -825,36 +939,56 @@ Accelerometer.prototype.gotShaken = function() {
 //    	Accel.stop();
 //}
 
+Accelerometer.prototype.getCurrentAcceleration = function(successCallback, errorCallback, options) {
+//    Console.println("getting current acceleration");
+    
+    var accel = new Acceleration( Accel.getX(), Accel.getY(), Accel.getZ() );
+    Accelerometer.lastAcceleration = accel;
+    successCallback(accel);
+}
+
+Accelerometer.prototype.getCurrentOrientation = function(successCallback, errorCallback, options) {
+//    Console.println("getting current orientation");
+    
+    var orient = new Orientation( Accel.getAzimuth(), Accel.getPitch(), Accel.getRoll() );
+    Accelerometer.lastOrienetation = orient;
+    successCallback(orient);
+}
+
 //Accelerometer.base_method = Accelerometer.prototype.watchAcceleration
 Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallback, options)
 {
     Accel.start();
-	
-	navigator.accelerometer.getCurrentAcceleration(successCallback, errorCallback, options);
-    var frequency = (options != undefined)? options.frequency : 1000;
+
+    navigator.accelerometer.getCurrentAcceleration(successCallback, errorCallback, options);
+    var frequency = (options != undefined)? options.frequency : 100;
+
     var id = setInterval(function() {
     	navigator.accelerometer.getCurrentAcceleration(successCallback, errorCallback, options);
     }, frequency);
     this.accelListeners.push(id);
 	
-	var that = this;
+    var that = this;
     return function () {Accelerometer.clearTypeWatch(that.accelListeners, id);};
 }
 
-Accelerometer.base_orient_method = Accelerometer.prototype.watchOrientation;
+//Accelerometer.base_orient_method = Accelerometer.prototype.watchOrientation;
 Accelerometer.prototype.watchOrientation = function(successCallback, errorCallback, options)
 {
     Accel.start();
 	
-	navigator.accelerometer.getCurrentOrientation(successCallback, errorCallback, options);
-    var frequency = (options != undefined)? options.frequency : 1000;
+    navigator.accelerometer.getCurrentOrientation(successCallback, errorCallback, options);
+    var frequency = (options != undefined)? options.frequency : 100;
+    navigator.accelerometer.getCurrentOrientation(successCallback, errorCallback, options);
+    var frequency = (options != undefined)? options.frequency : 100;
+
     var id = setInterval(function() {
        navigator.accelerometer.getCurrentOrientation(successCallback, errorCallback, options);
     }, frequency);
     this.orientListeners.push(id);
     
-	var that = this;
-	return function () {Accelerometer.clearTypeWatch(that.orientListeners, id);};
+    var that = this;
+    return function () {Accelerometer.clearTypeWatch(that.orientListeners, id);};
 }
 
 Accelerometer.clearTypeWatch = function(list, watchId) {
@@ -871,18 +1005,47 @@ Accelerometer.clearTypeWatch = function(list, watchId) {
 
 Accelerometer.prototype.clearAllWatches = function() {
     // clear the shake listeners
-	this.shakeListeners = [];
-	
-	// now clear acceleration listeners
-	for (var i = 0; i < this.accelListeners.length; i++) {
-		clearInterval(this.accelListeners[i]);
-	}
-	
-	// now clear orientation watches
-	for (var j = 0; j < this.orientListeners.length; j++) {
-		clearInterval(this.orientListeners[j]);
-	}
-	
-	// finally, stop the accelerometer
-	Accel.stop();
+    this.shakeListeners = {};
+    
+    // now clear acceleration listeners
+    for (var i = 0; i < this.accelListeners.length; i++) {
+    	clearInterval(this.accelListeners[i]);
+    }
+    
+    // now clear orientation watches
+    for (var j = 0; j < this.orientListeners.length; j++) {
+    	clearInterval(this.orientListeners[j]);
+    }
+    
+    // finally, stop the accelerometer
+    Accel.stop();
 }
+
+/**
+ * Used to keep the phone awake while the app is running
+ */
+function Power() {
+}
+
+Power.prototype.finish = function() {
+	Device.finish();
+}
+
+Power.FULL_WAKE_LOCK = 26;
+Power.PARTIAL_WAKE_LOCK = 1;
+Power.SCREEN_BRIGHT_WAKE_LOCK = 10;
+Power.SCREEN_DIM_WAKE_LOCK = 6;
+
+Power.prototype.setWakeLock = function(flags) {
+//    Console.println("Setting a wake lock");
+    var lockType = (typeof flags == "undefined")? Power.SCREEN_DIM_WAKE_LOCK : flags;
+    Device.setWakeLock(lockType);
+//    Console.println("WakeLock set");
+}
+
+Power.prototype.releaseWakeLock = function() {
+//    Console.println("Releasing wake lock");
+    Device.releaseWakeLock();
+}
+
+if (typeof navigator.power == "undefined") navigator.power = new Power();

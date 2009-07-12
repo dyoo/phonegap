@@ -23,13 +23,18 @@ package com.phonegap.demo;
  */
 import java.io.IOException;
 import java.util.TimeZone;
+import java.util.List;
 
+
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.os.PowerManager;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.SmsManager;
 import android.webkit.WebView;
@@ -47,22 +52,36 @@ public class PhoneGap {
 	public static String version = "0.2";
 	public static String platform = "Android";
 	public static String uuid;
+//	private Activity mActivity;
 	private Context mCtx;
 	private WebView mAppView;
-	SmsListener mSmsListener;
-	DirectoryManager fileManager;
-	AudioHandler audio;
-	ToneHandler tones;
+	private SmsListener mSmsListener;
+	private DirectoryManager fileManager;
+	private AudioHandler audio;
+	private ToneHandler tones;
+	private PowerManager power;
+        private Telephony telephony;
+	private PowerManager.WakeLock lock;
+	private ArgTable arguments;
     
-	public PhoneGap(Context ctx, WebView appView, AssetManager assets) {
+	public PhoneGap(Context ctx, WebView appView, AssetManager assets, ArgTable args) {
+//		this.mActivity = activity;
 		this.mCtx = ctx;
 		this.mAppView = appView;
+		this.arguments = args;
 
 		mSmsListener = new SmsListener(ctx,mAppView);
 		fileManager = new DirectoryManager();
-		audio = new AudioHandler("/sdcard/tmprecording.mp3", ctx, assets);
+		audio = new AudioHandler("/sdcard/tmprecording.mp3", ctx, mAppView, assets, arguments);
 		tones = new ToneHandler();
 		uuid = getUuid();
+		power = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+		this.telephony = new Telephony(ctx);
+		lock = null;
+	}
+
+	public void finish() {
+		((android.app.Activity)mCtx).finish();
 	}
 	
 	public void beep(long pattern)
@@ -271,7 +290,20 @@ public class PhoneGap {
     public void stopAllAudio() {
 	audio.stopAllPlaying();
     }
-    
+
+    public void increaseMusicVolume(int flags) {
+    	audio.increaseVolume(flags);
+    }
+
+    public void decreaseMusicVolume(int flags) {
+    	audio.decreaseVolume(flags);
+    }
+
+    public boolean setMusicVolume(int volume, int flags) {
+    	return audio.setVolume(volume, flags);
+    }
+
+/*    
     public long getCurrentPositionAudio(String file)
     {
     	System.out.println(audio.getCurrentPosition(file));
@@ -291,6 +323,7 @@ public class PhoneGap {
     public int getAudioOutputDevice(){
     	return audio.getAudioOutputDevice();
     }
+*/
 
     public void playDTMF(int tone) {
     	tones.playDTMF(tone);
@@ -299,7 +332,23 @@ public class PhoneGap {
     public void stopDTMF() {
     	tones.stopDTMF();
     }
-    
+
+    public void startMusicPlayer() {
+	    Intent i = new Intent(Intent.ACTION_VIEW);
+	    ComponentName comp = new ComponentName("com.android.music", "com.android.music.MusicBrowserActivity");
+	    i.setComponent(comp);
+	    i.addCategory(Intent.CATEGORY_BROWSABLE);
+	    mCtx.startActivity(i);
+    }
+
+/*
+    public void nextSong() {
+	    Intent i = new Intent(com.android.music.MusicPlaybackService.NEXT_ACTION);
+	    i.addCategory(Intent.CATEGORY_BROWSABLE);
+	    mCtx.
+    }
+*/
+
     public String getLine1Number() {
         TelephonyManager tm =
             (TelephonyManager)mCtx.getSystemService(Context.TELEPHONY_SERVICE);
@@ -338,10 +387,46 @@ public class PhoneGap {
 //	SmsListener listener = new SmsListener(mCtx, mAppView);
     }
 
-    public void stop() {
-    	stopAllAudio();
-    	stopDTMF();
+    public void setWakeLock(int lockFlag) {
+    	if (lock != null) {
+    	     lock.release();
+    	}
+    	
+    	Log.d("PhoneGap", "Setting new WakeLock with flag " + lockFlag + ". Phone will no longer sleep");
+
+    	lock = power.newWakeLock(lockFlag, "PhoneGap");
+//    	System.out.println("WakeLock created");
+    	lock.acquire();
+//    	System.out.println("Lock acquire called");
     }
+
+    public void releaseWakeLock() {
+    	if (lock != null) {
+    	    Log.d("PhoneGap", "Releasing WakeLock. Phone will now sleep again.");
+    	    lock.release();
+    	    lock = null;
+    	}
+    }
+
+
+
+
+    public List<CellInfo> getSignalStrengths() {
+	return this.telephony.getSignalStrengths();
+    }
+
+
+
+
+
+    public void stop() {
+    	audio.clearCache();
+//    	stopAllAudio();
+    	stopDTMF();
+    	releaseWakeLock();
+    }
+
+
     
 }
 

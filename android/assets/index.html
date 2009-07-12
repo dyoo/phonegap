@@ -20,14 +20,15 @@
     var shakeAndRing = function() {
     	if (stopShakeWatch == null) {
     	    Console.println("Starting shake listener.");
-   	    var suc = function() {rickRollStart();};
-    	    var fail = function() {Console.println("Shake watching failed.");};
+   	    var suc = function() {diskStart();};
+	    var fail = function() {Console.println("Shake watching failed.");};
+	    var ops = {"changeMagnitude" : 8.5, "shakeDelay" : 2000};
 
 //    	    Console.println("typeof shakeWatchId = " + (typeof shakeWatchId));
 //    	    Console.println("typeof navigator.accelerometer = " + (typeof navigator.accelerometer));
 //    	    Console.println("typeof watchShake = " + (typeof navigator.accelerometer.watchShake));
 
-            stopShakeWatch = navigator.accelerometer.watchShake(suc, fail);
+            stopShakeWatch = navigator.accelerometer.watchShake(suc, fail, ops);
     	}
     	else {
     	    Console.println("Stopping shake listener.");
@@ -36,11 +37,27 @@
     	}
     }
 
+    var stopVibrateWatch = null;
+
+    var shakeAndVibrate = function() {
+    	if (stopVibrateWatch == null) {
+   	    var suc = function() {navigator.notification.vibrate(0);};
+	    var fail = function() {Console.println("Shake watching failed.");};
+	    var ops = {"changeMagnitude" : 6.25, "shakeDelay" : 500};
+
+            stopVibrateWatch = navigator.accelerometer.watchShake(suc, fail, ops);
+    	}
+    	else {
+    	    stopVibrateWatch();
+    	    stopVibrateWatch = null;
+    	}
+    }
+
     var getLocation = function() {
       var suc = function(p){
 		alert(p.latitude + " " + p.longitude);
       };
-      var fail = function(){};
+      var fail = function() {Console.println("getLocation failed.");};
       navigator.geolocation.getCurrentPosition(suc,fail);
     }
 
@@ -69,46 +86,58 @@
 	    navigator.notification.beep(2);
     }
 
-    var isRRPlaying = false;
+    var isDiskPlaying = false;
     var isOtPlaying = false;
-    var rickRollFile = "file:///android_asset/audio/audiotest.mp3";
+    var diskFile = "file:///android_asset/tones/C-tone.wav";
     var webFile = "http://www.cs.brown.edu/people/jon/music/A.F.I%20-%20Midnight%20Sun.mp3";
 
-    var rickRollStart = function() {
-	if (isRRPlaying) {
-//	    Console.println("Pausing Rick Roll.");
-	    navigator.audio.pause(rickRollFile);
-	    isRRPlaying = false;
-	}
-	else {
-//	    Console.println("Starting Rick Roll.");
-	    navigator.audio.play(rickRollFile);
-	    isRRPlaying = true;
-	    isOtPlaying = false;
-	}
+    var diskStart = function() {
+    	if (isDiskPlaying) {
+//	    Console.println("Pausing disk file.");
+    	    navigator.audio.pauseMusic(diskFile);
+    	    isDiskPlaying = false;
+    	}
+    	else {
+//	    Console.println("Starting disk file.");
+    	    navigator.audio.playMusic(diskFile, function() {isDiskPlaying = false;});
+    	    isDiskPlaying = true;
+//    	    isOtPlaying = false;
+    	}
     }
 
     var webStart = function() {
-	if (isOtPlaying) {
-	    navigator.audio.pause(webFile);
-	    isOtPlaying = false;
-	}
-	else {
-	    navigator.audio.play(webFile);
-	    isRRPlaying = false;
-	    isOtPlaying = true;
-	}
+    	if (isOtPlaying) {
+    	    navigator.audio.pauseMusic(webFile);
+    	    isOtPlaying = false;
+    	}
+    	else {
+    	    navigator.audio.playMusic(webFile);
+//    	    isDiskPlaying = false;
+    	    isOtPlaying = true;
+    	}
     }
 
-    var rickRollStop = function() {
+    var diskStop = function() {
 //	    Console.println("Trying to stop audio.");
-	    navigator.audio.stop(rickRollFile);
-	    isRRPlaying = false;
+	    navigator.audio.stopMusic(diskFile);
+	    isDiskPlaying = false;
     }
 
     var stopAllAudio = function() {
-    	Console.println("Stopping all audio (index.html)");
-	navigator.audio.stopAll();
+//    	Console.println("Stopping all audio (index.html)");
+	navigator.audio.stopAllMusic();
+    }
+	
+    var increaseAudioVol = function() {
+		navigator.audio.increaseMusicVolume();
+    }
+
+    var decreaseAudioVol = function() {
+		navigator.audio.decreaseMusicVolume();
+    }
+    
+    var setAudioVol = function() {
+		navigator.audio.setMusicVolume(window.document.getElementById('vol').value);
     }
 	
 	var webStop = function() {
@@ -126,10 +155,10 @@
   		navigator.ContactManager.get(suc, fail);
   	}
   	
-	var accelWatchId = null;
+	var stopAccelWatch = null;
 
   	var watchAccel = function() {
-	    if (accelWatchId == null) {
+	    if (stopAccelWatch == null) {
 //		Console.println("Starting accel watch");
   		var suc = function(a){
   			document.getElementById('azimuth').innerHTML = roundNumber(a.azimuth);
@@ -139,18 +168,18 @@
   		var fail = function(){};
   		var opt = {};
   		opt.frequency = 100;
-  		accelWatchId = navigator.accelerometer.watchOrientation(suc,fail);
+  		stopAccelWatch = navigator.accelerometer.watchOrientation(suc,fail);
 	    }
 	    else {
 //		Console.println("Stopping accel watch");
-		navigator.accelerometer.clearWatch(accelWatchId);
-		accelWatchId = null;
+		stopAccelWatch();
+		stopAccelWatch = null;
 	    }
   	}
 
 	var playDTMF = function(tone) {
 		navigator.audio.playDTMF(tone);
-    	    	setTimeout(navigator.audio.stopDTMF, 20000);
+    	    	setTimeout(navigator.audio.stopDTMF, 3000);
 	}
 
 	var stopDTMF = function() {
@@ -172,10 +201,19 @@
 	  var preventBehavior = function(e) { 
       e.preventDefault(); 
     };
+
+    function preventSleep() {
+    	navigator.power.setWakeLock();
+    };
+
+    function allowSleep() {
+    	navigator.power.releaseWakeLock();
+    };
 		
 		function init(){
 		  document.addEventListener("touchmove", preventBehavior, false);
 		  deviceInfo();
+//		  navigator.power.keepAwake();
 		}
 		
 	  </script>
@@ -183,8 +221,10 @@
   <body onload="init();" id="stage" class="theme">
     <h1>Welcome to PhoneGap!</h1>
     <h2>this file is located at assets/index.html</h2>
-    <h2><a href="file:///android_asset/Bubble2/world.html">Bubble2</a></h2>
-    <h2><a href="file:///android_asset/ShakeToRing/world.html">Danny's Shake</a></h2>
+    <h2><a href="file:///android_asset/Bubble3/world.html">Bubble</a></h2>
+    <h2><a href="file:///android_asset/ShakeToDtmf/world.html">DMTF Shake</a></h2>
+    <h2><a href="file:///android_asset/SilencingMusic/world.html">Sleep Timer</a></h2>
+    <h2><a href="file:///android_asset/cpu-test.html">CPU Test</a></h2>
     <div id="info">
       <h4>Platform: <span id="platform">&nbsp;</span></h4>
       <h4>Version: <span id="version">&nbsp;</span></h4>
@@ -199,42 +239,53 @@
       <dt>Lat:</dt><dd id="lat">&nbsp;</dd>
       <dt>Lng:</dt><dd id="lng">&nbsp;</dd>
     </dl>
-    <form method="post" action="#">
+    <a href="#" class="btn large" onclick="navigator.audio.startMusicPlayer();">Start Music Player</a>
+    <a name="volControls" href="#volControls" class="btn" onclick="increaseAudioVol();">Vol up</a>
+    <a href="#volControls" class="btn" onclick="decreaseAudioVol();">Vol down</a>
+    <form method="post" action="#volControls">
+	    <input type="text" id="vol" />
+        <input type="submit" value="Change Volume" class="btn large" onclick="setAudioVol()" />
+    </form>
+    <a href="#volControls" class="btn large" onclick="shakeAndRing();">Shake and Ring</a>
+    <a href="#volControls" class="btn large" onclick="shakeAndVibrate();">Shake and Vibrate</a>
+    <a href="#volControls" class="btn large" onclick="watchAccel();">Watch Accelerometer</a>
+    <a href="#volControls" class="btn large" onclick="watchLocation();">Watch Location</a>
+    <a href="#volControls" class="btn large" onclick="getLocation();">Get Location</a>
+    <a href="#volControls" class="btn" onclick="preventSleep();">Keep Awake</a>
+    <a href="#volControls" class="btn" onclick="allowSleep();">Allow Sleep</a>
+    <a href="#volControls" class="btn large" onclick="navigator.power.finish();">Finish</a>
+    <a name="keypad" href="#keypad" class="btn small" onclick="playDTMF(0)">0</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(1)">1</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(2)">2</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(3)">3</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(4)">4</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(5)">5</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(6)">6</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(7)">7</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(8)">8</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(9)">9</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(10)">10</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(11)">11</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(12)">12</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(13)">13</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(14)">14</a>
+    <a href="#keypad" class="btn small" onclick="playDTMF(15)">15</a>
+    <a href="#keypad" class="btn large" onclick="stopDTMF()">Stop DTMF</a>
+    <a name="music" href="#music" class="btn" onclick="diskStart();">> / || (File)</a>
+    <a href="#music" class="btn" onclick="webStart();">> / || (Web)</a>
+    <a href="#music" class="btn" onclick="diskStop();">[] (File)</a>
+    <a href="#music" class="btn" onclick="webStop();">[] (Web)</a>
+    <a href="#music" class="btn large" onclick="stopAllAudio();">Stop All Audio</a>
+    <a href="tel://411" class="btn large">Call 411</a>
+    <a href="#music" class="btn" onclick="beep();">Beep</a>
+    <a href="#music" class="btn" onclick="vibrate();">Vibrate</a>
+    <form method="post" action="#music">
     	<p>Number:</p>
     	<input type="text" id="number" />
     	<p>Message:</p>
     	<input type="text" id="message" />
         <input type="submit" value="Send Sms" class="btn large" onclick="sendSms()" />
     </form>
-    <a href="#" class="btn large" onclick="shakeAndRing();">Shake and Ring</a>
-    <a href="#" class="btn large" onclick="watchAccel();">Watch Accelerometer</a>
-    <a href="#" class="btn large" onclick="watchLocation();">Watch Location</a>
-    <a href="#" class="btn large" onclick="getLocation();">Get Location</a>
-    <a href="#" class="btn small" onclick="playDTMF(0)">0</a>
-    <a href="#" class="btn small" onclick="playDTMF(1)">1</a>
-    <a href="#" class="btn small" onclick="playDTMF(2)">2</a>
-    <a href="#" class="btn small" onclick="playDTMF(3)">3</a>
-    <a href="#" class="btn small" onclick="playDTMF(4)">4</a>
-    <a href="#" class="btn small" onclick="playDTMF(5)">5</a>
-    <a href="#" class="btn small" onclick="playDTMF(6)">6</a>
-    <a href="#" class="btn small" onclick="playDTMF(7)">7</a>
-    <a href="#" class="btn small" onclick="playDTMF(8)">8</a>
-    <a href="#" class="btn small" onclick="playDTMF(9)">9</a>
-    <a href="#" class="btn small" onclick="playDTMF(10)">10</a>
-    <a href="#" class="btn small" onclick="playDTMF(11)">11</a>
-    <a href="#" class="btn small" onclick="playDTMF(12)">12</a>
-    <a href="#" class="btn small" onclick="playDTMF(13)">13</a>
-    <a href="#" class="btn small" onclick="playDTMF(14)">14</a>
-    <a href="#" class="btn small" onclick="playDTMF(15)">15</a>
-    <a href="#" class="btn large" onclick="stopDTMF()">Stop DTMF</a>
-    <a href="#" class="btn" onclick="rickRollStart();">> / || (File)</a>
-    <a href="#" class="btn" onclick="webStart();">> / || (Web)</a>
-    <a href="#" class="btn" onclick="rickRollStop();">[] (File)</a>
-    <a href="#" class="btn" onclick="webStop();">[] (Web)</a>
-    <a href="#" class="btn large" onclick="stopAllAudio();">Stop All Audio</a>
-    <a href="tel://411" class="btn large">Call 411</a>
-    <a href="#" class="btn" onclick="beep();">Beep</a>
-    <a href="#" class="btn" onclick="vibrate();">Vibrate</a>
     <!-- 
     	<a href="#" class="btn large" onclick="getContact();">Get Fourth Contact</a>
      -->
