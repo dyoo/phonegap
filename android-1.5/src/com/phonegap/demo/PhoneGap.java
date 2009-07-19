@@ -51,7 +51,6 @@ public class PhoneGap {
 	public boolean droid = true;
 	public static String version = "0.2";
 	public static String platform = "Android";
-	public static String uuid;
 //	private Activity mActivity;
 	private Context mCtx;
 	private WebView mAppView;
@@ -74,7 +73,6 @@ public class PhoneGap {
 		fileManager = new DirectoryManager();
 		audio = new AudioHandler("/sdcard/tmprecording.mp3", ctx, mAppView, assets, arguments);
 		tones = new ToneHandler();
-		uuid = getUuid();
 		power = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
 		this.telephony = new Telephony(ctx);
 		lock = null;
