@@ -5,6 +5,9 @@ import java.util.HashMap;
 import android.content.Context;
 import android.webkit.WebView;
 import android.util.Log;
+import android.location.Location;
+
+
 
 /*
  * This class is the interface to the Geolocation.  It's bound to the geo object.
@@ -31,6 +34,16 @@ public class GeoBroker {
 		GeoListener listener = new GeoListener("global", mCtx, 10000, mAppView, arguments);
 	}
 	
+
+    public float getDistanceBetween(double lat1, double long1, 
+				    double lat2, double long2) {
+	float[] result = new float[1];
+	Location.distanceBetween(lat1, long1, lat2, long2, result);
+	return result[0];
+	
+    }
+
+
 	public String start(int freq, String key)
 	{
 //		Log.d("GeoBroker start", "Making new GeoListener with freq " + freq + " and key " + key);

@@ -347,7 +347,7 @@
     	/**
     	 * The last known GPS position.
     	 */
-    	this.lastPosition = null;
+    	this.lastPosition = {latitude: 0, longitude: 0};
 
 	this.listeners = [];
     }
@@ -365,6 +365,15 @@
     	// If the position is available then call success
     	// If the position is not available then call error
     }
+
+
+
+// getDistanceBetween: number number number number -> number
+// Returns the distance in meters between the two latitude/longitude pairs.
+Geolocation.prototype.getDistanceBetween = function(lat1, long1, lat2, long2) {
+    return Geo.getDistanceBetween(lat1, long1, lat2, long2);
+}
+
     
     /**
      * Asynchronously aquires the position repeatedly at a given interval.
@@ -765,9 +774,11 @@ Geolocation.prototype.success = function(key, lat, lng)
 	    this.listeners[key].fail();
     }
 
+
     p = {};
     p.latitude = lat;
     p.longitude = lng;
+    this.lastPosition = p;
     this.listeners[key].success(p);
 }
 
