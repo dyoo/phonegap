@@ -87,10 +87,12 @@ public class NetworkListener implements LocationListener {
 	 */
 	public void onLocationChanged(Location location) {
 		Log.d(LOG_TAG, "The location has been updated!");
-		if (!owner.mGps.hasLocation())
-		{
-			owner.success(location);
-		}
+// 		if (!owner.mGps.hasLocation())
+// 		{
+// 			owner.success(location);
+// 		}
+		// FIXME: do filtering
+		owner.success(location);
 		cLoc = location;
 	}
 	
