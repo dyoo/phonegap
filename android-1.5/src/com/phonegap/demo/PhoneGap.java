@@ -44,130 +44,130 @@ import android.util.Log;
 
 public class PhoneGap {
 	
-	private static final String LOG_TAG = "PhoneGap";
-	/*
-	 * UUID, version and availability	
-	 */
-	public boolean droid = true;
-	public static String version = "0.2";
-	public static String platform = "Android";
-//	private Activity mActivity;
-	private Context mCtx;
-	private WebView mAppView;
-	private SmsListener mSmsListener;
-	private DirectoryManager fileManager;
-	private AudioHandler audio;
-	private ToneHandler tones;
-	private PowerManager power;
-        private Telephony telephony;
-	private PowerManager.WakeLock lock;
-	private ArgTable arguments;
+    private static final String LOG_TAG = "PhoneGap";
+    /*
+     * UUID, version and availability	
+     */
+    public boolean droid = true;
+    public static String version = "0.2";
+    public static String platform = "Android";
+    //	private Activity mActivity;
+    private Context mCtx;
+    private WebView mAppView;
+    private SmsListener mSmsListener;
+    private DirectoryManager fileManager;
+    private AudioHandler audio;
+    private ToneHandler tones;
+    private PowerManager power;
+    private Telephony telephony;
+    private PowerManager.WakeLock lock;
+    private ArgTable arguments;
     
-	public PhoneGap(Context ctx, WebView appView, AssetManager assets, ArgTable args) {
-//		this.mActivity = activity;
-		this.mCtx = ctx;
-		this.mAppView = appView;
-		this.arguments = args;
+    public PhoneGap(Context ctx, WebView appView, AssetManager assets, ArgTable args) {
+	//		this.mActivity = activity;
+	this.mCtx = ctx;
+	this.mAppView = appView;
+	this.arguments = args;
 
-		mSmsListener = new SmsListener(ctx,mAppView);
-		fileManager = new DirectoryManager();
-		audio = new AudioHandler("/sdcard/tmprecording.mp3", ctx, mAppView, assets, arguments);
-		tones = new ToneHandler();
-		power = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
-		this.telephony = new Telephony(ctx);
-		lock = null;
-	}
+	mSmsListener = new SmsListener(ctx,mAppView);
+	fileManager = new DirectoryManager();
+	audio = new AudioHandler("/sdcard/tmprecording.mp3", ctx, mAppView, assets, arguments);
+	tones = new ToneHandler();
+	power = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
+	this.telephony = new Telephony(ctx);
+	lock = null;
+    }
 
-	public void finish() {
-		((android.app.Activity)mCtx).finish();
-	}
+    public void finish() {
+	((android.app.Activity)mCtx).finish();
+    }
 	
-	public void beep(long pattern)
-	{
-		RingtoneManager beeper = new RingtoneManager(mCtx);
-		Uri ringtone = beeper.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		Ringtone notification = beeper.getRingtone(mCtx, ringtone);
-		notification.play();
-	}
+    public void beep(long pattern)
+    {
+	RingtoneManager beeper = new RingtoneManager(mCtx);
+	Uri ringtone = beeper.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+	Ringtone notification = beeper.getRingtone(mCtx, ringtone);
+	notification.play();
+    }
 	
-	public void vibrate(long pattern){
+    public void vibrate(long pattern){
         // Start the vibration, 0 defaults to half a second.
-		if (pattern == 0)
-			pattern = 500;
+	if (pattern == 0)
+	    pattern = 500;
         Vibrator vibrator = (Vibrator) mCtx.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(pattern);
-	}
+    }
 	
-	public String getPlatform()
-	{
-		return this.platform;
-	}
+    public String getPlatform()
+    {
+	return this.platform;
+    }
 	
-	public String getUuid()
-	{
+    public String getUuid()
+    {
 
-		TelephonyManager operator = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
-		String uuid = operator.getDeviceId();
-		return uuid;
-	}
+	TelephonyManager operator = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+	String uuid = operator.getDeviceId();
+	return uuid;
+    }
 	
-	public void init()
-	{
-		mAppView.loadUrl("javascript:Device.setData('Android','" + version + "','" + this.getUuid() + "')");
-	}
+    public void init()
+    {
+	mAppView.loadUrl("javascript:Device.setData('Android','" + version + "','" + this.getUuid() + "')");
+    }
 	
-	public String getModel()
-	{
-		String model = android.os.Build.MODEL;
-		return model;
-	}
-	public String getProductName()
-	{
-		String productname = android.os.Build.PRODUCT;
-		return productname;
-	}
-	public String getOSVersion()
-	{
-		String osversion = android.os.Build.VERSION.RELEASE;
-		return osversion;
-	}
-	public String getSDKVersion()
-	{
-		String sdkversion = android.os.Build.VERSION.SDK;
-		return sdkversion;
-	}
+    public String getModel()
+    {
+	String model = android.os.Build.MODEL;
+	return model;
+    }
+    public String getProductName()
+    {
+	String productname = android.os.Build.PRODUCT;
+	return productname;
+    }
+    public String getOSVersion()
+    {
+	String osversion = android.os.Build.VERSION.RELEASE;
+	return osversion;
+    }
+    public String getSDKVersion()
+    {
+	String sdkversion = android.os.Build.VERSION.SDK;
+	return sdkversion;
+    }
 	
-	public String getVersion()
-	{
-		return version;
-	}	
+    public String getVersion()
+    {
+	return version;
+    }	
 	
-	// Old SMS code, figure out what to do with this!
-	// BTW: This is awesome!
+    // Old SMS code, figure out what to do with this!
+    // BTW: This is awesome!
 	
-	public void notificationWatchPosition(String filter)
-	/**
-	 * Starts the listener for incoming notifications of type filter
-	 * TODO: JavaScript Call backs for success and error handling. More filter types. 
-	 */
-	{
-		if (filter.contains("SMS"))
-		{
+    public void notificationWatchPosition(String filter)
+    /**
+     * Starts the listener for incoming notifications of type filter
+     * TODO: JavaScript Call backs for success and error handling. More filter types. 
+     */
+    {
+	if (filter.contains("SMS"))
+	    {
     		IntentFilter mFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
     		mCtx.registerReceiver(mSmsListener,mFilter);
-		}
-	}
+	    }
+    }
 	
     public void notificationClearWatch(String filter) 
-	/**
-	 * Stops the listener for incoming notifications of type filter
-	 * TODO: JavaScript Call backs for success and error handling 
-	 */
+    /**
+     * Stops the listener for incoming notifications of type filter
+     * TODO: JavaScript Call backs for success and error handling 
+     */
     {
     	if (filter.contains("SMS")) 
-    	{
+	    {
     		mCtx.unregisterReceiver(mSmsListener);
-    	}	
+	    }	
     }
     
     public void httpGet(String url, String file)
@@ -211,10 +211,10 @@ public class PhoneGap {
     } 
 
     /**
-	 * Delete a specific directory. 
-	 * Everyting in side the directory would be gone.
-	 * TODO: JavaScript Call backs for success and error handling 
-	 */
+     * Delete a specific directory. 
+     * Everyting in side the directory would be gone.
+     * TODO: JavaScript Call backs for success and error handling 
+     */
     public int deleteDirectory (String dir){
         if (fileManager.deleteDirectory(dir))
             return 0;
@@ -224,9 +224,9 @@ public class PhoneGap {
     
 
     /**
-	 * Delete a specific file. 
-	 * TODO: JavaScript Call backs for success and error handling 
-	 */
+     * Delete a specific file. 
+     * TODO: JavaScript Call backs for success and error handling 
+     */
     public int deleteFile (String file){
         if (fileManager.deleteFile(file))
             return 0;
@@ -236,9 +236,9 @@ public class PhoneGap {
     
 
     /**
-	 * Create a new directory. 
-	 * TODO: JavaScript Call backs for success and error handling 
-	 */
+     * Create a new directory. 
+     * TODO: JavaScript Call backs for success and error handling 
+     */
     public int createDirectory(String dir){
     	if (fileManager.createDirectory(dir))
             return 0;
@@ -252,18 +252,18 @@ public class PhoneGap {
      * TODO: Basic functions done but needs more work on error handling and call backs, remove record hack
      */
     
-//    public void startRecordingAudio(String file)
-//    {
-//    	/* for this to work the recording needs to be specified in the constructor,
-//    	 * a hack to get around this, I'm moving the recording after it's complete 
-//    	 */
-//    	audio.startRecording(file);
-//    }
-//    
-//    public void stopRecordingAudio()
-//    {
-//    	audio.stopRecording();
-//    }
+    //    public void startRecordingAudio(String file)
+    //    {
+    //    	/* for this to work the recording needs to be specified in the constructor,
+    //    	 * a hack to get around this, I'm moving the recording after it's complete 
+    //    	 */
+    //    	audio.startRecording(file);
+    //    }
+    //    
+    //    public void stopRecordingAudio()
+    //    {
+    //    	audio.stopRecording();
+    //    }
     
     public void startPlayingAudio(String file)
     {
@@ -301,27 +301,27 @@ public class PhoneGap {
     	return audio.setVolume(volume, flags);
     }
 
-/*    
-    public long getCurrentPositionAudio(String file)
-    {
-    	System.out.println(audio.getCurrentPosition(file));
-    	return(audio.getCurrentPosition(file));
-    }
+    /*    
+	  public long getCurrentPositionAudio(String file)
+	  {
+	  System.out.println(audio.getCurrentPosition(file));
+	  return(audio.getCurrentPosition(file));
+	  }
     
-    public long getDurationAudio(String file)
-    {
-    	System.out.println(audio.getDuration(file));
-    	return(audio.getDuration(file));
-    }  
+	  public long getDurationAudio(String file)
+	  {
+	  System.out.println(audio.getDuration(file));
+	  return(audio.getDuration(file));
+	  }  
     
-    public void setAudioOutputDevice(int output){
-    	audio.setAudioOutputDevice(output);
-    }
+	  public void setAudioOutputDevice(int output){
+	  audio.setAudioOutputDevice(output);
+	  }
     
-    public int getAudioOutputDevice(){
-    	return audio.getAudioOutputDevice();
-    }
-*/
+	  public int getAudioOutputDevice(){
+	  return audio.getAudioOutputDevice();
+	  }
+    */
 
     public void playDTMF(int tone) {
     	tones.playDTMF(tone);
@@ -332,20 +332,20 @@ public class PhoneGap {
     }
 
     public void startMusicPlayer() {
-	    Intent i = new Intent(Intent.ACTION_VIEW);
-	    ComponentName comp = new ComponentName("com.android.music", "com.android.music.MusicBrowserActivity");
-	    i.setComponent(comp);
-	    i.addCategory(Intent.CATEGORY_BROWSABLE);
-	    mCtx.startActivity(i);
+	Intent i = new Intent(Intent.ACTION_VIEW);
+	ComponentName comp = new ComponentName("com.android.music", "com.android.music.MusicBrowserActivity");
+	i.setComponent(comp);
+	i.addCategory(Intent.CATEGORY_BROWSABLE);
+	mCtx.startActivity(i);
     }
 
-/*
-    public void nextSong() {
-	    Intent i = new Intent(com.android.music.MusicPlaybackService.NEXT_ACTION);
-	    i.addCategory(Intent.CATEGORY_BROWSABLE);
-	    mCtx.
-    }
-*/
+    /*
+      public void nextSong() {
+      Intent i = new Intent(com.android.music.MusicPlaybackService.NEXT_ACTION);
+      i.addCategory(Intent.CATEGORY_BROWSABLE);
+      mCtx.
+      }
+    */
 
     public String getLine1Number() {
         TelephonyManager tm =
@@ -355,24 +355,24 @@ public class PhoneGap {
     
     public String getVoiceMailNumber() {
     	TelephonyManager tm =
-    		(TelephonyManager)mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+	    (TelephonyManager)mCtx.getSystemService(Context.TELEPHONY_SERVICE);
         return(tm.getVoiceMailNumber());
     }
     
     public String getNetworkOperatorName(){
     	TelephonyManager tm =
-    		(TelephonyManager)mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+	    (TelephonyManager)mCtx.getSystemService(Context.TELEPHONY_SERVICE);
         return(tm.getNetworkOperatorName());
     }
     
     public String getSimCountryIso(){
     	TelephonyManager tm =
-    		(TelephonyManager)mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+	    (TelephonyManager)mCtx.getSystemService(Context.TELEPHONY_SERVICE);
         return(tm.getSimCountryIso());
     }
     
     public String getTimeZoneID() {
-       TimeZone tz = TimeZone.getDefault();
+	TimeZone tz = TimeZone.getDefault();
         return(tz.getID());
     }
 
@@ -382,20 +382,20 @@ public class PhoneGap {
     }
 
     public void smsStart() {
-//	SmsListener listener = new SmsListener(mCtx, mAppView);
+	//	SmsListener listener = new SmsListener(mCtx, mAppView);
     }
 
     public void setWakeLock(int lockFlag) {
     	if (lock != null) {
-    	     lock.release();
+	    lock.release();
     	}
     	
     	Log.d("PhoneGap", "Setting new WakeLock with flag " + lockFlag + ". Phone will no longer sleep");
 
     	lock = power.newWakeLock(lockFlag, "PhoneGap");
-//    	System.out.println("WakeLock created");
+	//    	System.out.println("WakeLock created");
     	lock.acquire();
-//    	System.out.println("Lock acquire called");
+	//    	System.out.println("Lock acquire called");
     }
 
     public void releaseWakeLock() {
@@ -420,7 +420,7 @@ public class PhoneGap {
 
     public void stop() {
     	audio.clearCache();
-//    	stopAllAudio();
+	//    	stopAllAudio();
     	stopDTMF();
     	releaseWakeLock();
     }
