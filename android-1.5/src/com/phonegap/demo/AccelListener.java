@@ -83,7 +83,7 @@ public class AccelListener implements SensorListener{
 		}
 	}
 
-	AccelListener(Context ctx, WebView appView, ArgTable args)
+        public AccelListener(Context ctx, WebView appView, ArgTable args)
 	{
 		mCtx = ctx;
 		mAppView = appView;

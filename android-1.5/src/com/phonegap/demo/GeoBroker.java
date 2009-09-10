@@ -21,7 +21,7 @@ public class GeoBroker {
 	private ArgTable arguments;
 	private HashMap<String, GeoListener> geoListeners;
 	
-	GeoBroker(Context ctx, WebView view, ArgTable args)
+	public GeoBroker(Context ctx, WebView view, ArgTable args)
 	{
 		mCtx = ctx;
 		mAppView = view;
