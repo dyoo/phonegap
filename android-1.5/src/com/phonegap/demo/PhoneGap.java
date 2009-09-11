@@ -406,6 +406,10 @@ public class PhoneGap {
     	}
     }
 
+    public String getUrl(String url) {
+	return new Network().getUrl(url);
+    }
+
 
 
     // getSignalStrengths: (listof CellInfo)
