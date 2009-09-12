@@ -113,6 +113,7 @@ public class DroidGap extends Activity {
     	gap.stop();
     	geo.stop();
     	accel.stop();
+	appView.destroy();
     	super.onStop();
     }
         
