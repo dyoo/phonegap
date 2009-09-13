@@ -2,6 +2,12 @@ package com.phonegap.demo;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
+import java.net.URLConnection;
+import java.net.URL;
 import java.util.HashMap;
 
 import android.content.Context;
@@ -102,6 +108,25 @@ public class AudioHandler implements OnCompletionListener, OnPreparedListener, O
 	}
 */	
 	
+    private File readStreamedUrl(String url) {
+	try {
+	    URLConnection cn = new URL(url).openConnection();
+	    cn.connect();
+	    BufferedInputStream in = new BufferedInputStream(cn.getInputStream());
+	    File f = File.createTempFile("play", ".dat");
+	    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+	    int ch;
+	    while ((ch = in.read()) != -1) {
+		out.write(ch);
+	    }
+	    in.close();
+	    out.close();
+	    return f;
+	} catch (IOException e) {
+	    throw new RuntimeException(e);
+	}
+    }
+
 	protected void startPlaying(String file) {
 		MPlayerStatus status = mPlayers_file.get(file);
 		if ( status == null ) {
@@ -109,17 +134,20 @@ public class AudioHandler implements OnCompletionListener, OnPreparedListener, O
 				AssetFileDescriptor fileAsset = getAssetFileDesc(file);
 				
 				MediaPlayer mPlayer = new MediaPlayer();
+				mPlayer.setOnPreparedListener(this);
 				status = new MPlayerStatus(file, mPlayer);
 				mPlayers_file.put(file, status);
 				mPlayers_player.put(mPlayer, status);
 				Log.d("Audio startPlaying", "audio: " + file);
+
 				if (isStreaming(file))
 				{
+				    File f = readStreamedUrl(file);
 					Log.d("AudioStartPlaying", "Streaming");
 					// Streaming prepare async
-					mPlayer.setDataSource(file);
+					mPlayer.setDataSource(f.getAbsolutePath());
 					mPlayer.setAudioStreamType(MUSIC_STREAM);  
-					mPlayer.prepareAsync();
+					mPlayer.prepare();
 				} else {
 					Log.d("AudioStartPlaying", "File");
 					// Not streaming prepare synchronous, abstract base directory
@@ -133,21 +161,18 @@ public class AudioHandler implements OnCompletionListener, OnPreparedListener, O
 					}
 					mPlayer.prepare();
 				}
-				mPlayer.setOnPreparedListener(this);
+
 				status.isPlaying = true;
 			} catch (Exception e) { e.printStackTrace(); }
 			
 		}
 		else if ( !status.isPlaying ) {
 			try {
-				if ( isStreaming(file) )
-					status.player.prepareAsync();
-				else
-					status.player.prepare();
-
-				status.player.start();
-				status.isPlaying = true;
-				status.isPaused = false;
+			    
+			    status.player.prepare();
+			    status.player.start();
+			    status.isPlaying = true;
+			    status.isPaused = false;
 			} catch (Exception e) { e.printStackTrace(); }
 		}
 		// Otherwise check to see if it's paused, if it is, resume
