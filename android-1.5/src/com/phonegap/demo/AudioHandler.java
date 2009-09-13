@@ -113,7 +113,8 @@ public class AudioHandler implements OnCompletionListener, OnPreparedListener, O
 	    URLConnection cn = new URL(url).openConnection();
 	    cn.connect();
 	    BufferedInputStream in = new BufferedInputStream(cn.getInputStream());
-	    File f = File.createTempFile("play", ".dat");
+	    // The extension actually matters to the media player.
+	    File f = File.createTempFile("play", url.substring(url.length()-4));
 	    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(f));
 	    int ch;
 	    while ((ch = in.read()) != -1) {
