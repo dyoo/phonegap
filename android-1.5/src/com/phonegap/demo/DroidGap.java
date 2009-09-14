@@ -35,8 +35,15 @@ import android.view.WindowManager;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.content.Intent;
+
 
 public class DroidGap extends Activity {
+
+
+    static final int PLAYLIST_PICKED = 8024;
+
+
 	
     private static final String LOG_TAG = "DroidGap";
     private WebView appView;
@@ -47,6 +54,7 @@ public class DroidGap extends Activity {
     private AccelListener accel;
     private ConsoleOutput console;
     private ArgTable arguments;
+    private PlaylistPicker playlistPicker;
 	
     /** Called when the activity is first created. */
     @Override
@@ -100,13 +108,21 @@ public class DroidGap extends Activity {
     	geo = new GeoBroker(this, appView, arguments);
     	accel = new AccelListener(this, appView, arguments);
     	console = new ConsoleOutput(this, appView);
+	playlistPicker = new PlaylistPicker();
+
     	// This creates the new javascript interfaces for PhoneGap
     	appView.addJavascriptInterface(gap, "Device");
     	appView.addJavascriptInterface(geo, "Geo");
     	appView.addJavascriptInterface(accel, "Accel");
 	appView.addJavascriptInterface(console, "Console");
 	appView.addJavascriptInterface(arguments, "Args");
+
+
+
+	appView.addJavascriptInterface(playlistPicker, "PlaylistPicker");
     }
+
+
 
     public void onStop() {
     	System.out.println("Stopping everything");
@@ -141,5 +157,35 @@ public class DroidGap extends Activity {
             return true;
         }
     }
-    
+
+
+
+
+    public class PlaylistPicker {
+	public PlaylistPicker() {}
+	public void getPlaylist() {
+	    bindPlaylistPicker();
+	    // FIXME: bind the callback to get back the right result.
+	}
+    }
+
+
+    private void bindPlaylistPicker() {
+	Intent intent = new Intent();
+	intent.setClass(this, plt.playlist.PickPlaylist.class);
+	this.startActivityForResult(intent, PLAYLIST_PICKED);
+    }
+
+    protected void onActivityResult(int requestCode, 
+				    int resultCode,
+				    Intent data) {
+	if (resultCode == RESULT_OK) {
+	    switch (requestCode) {
+	    case PLAYLIST_PICKED:
+		break;
+	    default:
+	    };
+	} else {
+	}
+    }
 }
