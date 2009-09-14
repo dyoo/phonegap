@@ -116,9 +116,6 @@ public class DroidGap extends Activity {
     	appView.addJavascriptInterface(accel, "Accel");
 	appView.addJavascriptInterface(console, "Console");
 	appView.addJavascriptInterface(arguments, "Args");
-
-
-
 	appView.addJavascriptInterface(playlistPicker, "PlaylistPicker");
     }
 

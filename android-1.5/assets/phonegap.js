@@ -1,43 +1,42 @@
-    
+/**
+ * This class contains acceleration information
+ * @constructor
+ * @param {Number} x The force applied by the device in the x-axis.
+ * @param {Number} y The force applied by the device in the y-axis.
+ * @param {Number} z The force applied by the device in the z-axis.
+ */
+function Acceleration(x, y, z) {
     /**
-     * This class contains acceleration information
-     * @constructor
-     * @param {Number} x The force applied by the device in the x-axis.
-     * @param {Number} y The force applied by the device in the y-axis.
-     * @param {Number} z The force applied by the device in the z-axis.
+     * The force applied by the device in the x-axis.
      */
-    function Acceleration(x, y, z) {
-    	/**
-    	 * The force applied by the device in the x-axis.
-    	 */
-    	this.x = x;
-    	/**
-    	 * The force applied by the device in the y-axis.
-    	 */
-    	this.y = y;
-    	/**
-    	 * The force applied by the device in the z-axis.
-    	 */
-    	this.z = z;
-    	/**
-    	 * The time that the acceleration was obtained.
-    	 */
-    	this.timestamp = new Date().getTime();
-    }
-    
+    this.x = x;
     /**
+     * The force applied by the device in the y-axis.
+     */
+    this.y = y;
+    /**
+     * The force applied by the device in the z-axis.
+     */
+    this.z = z;
+    /**
+     * The time that the acceleration was obtained.
+     */
+    this.timestamp = new Date().getTime();
+}
+
+/**
      * This class specifies the options for requesting acceleration data.
      * @constructor
      */
-    function AccelerationOptions() {
-    	/**
+function AccelerationOptions() {
+    /**
     	 * The timeout after which if acceleration data cannot be obtained the errorCallback
     	 * is called.
     	 */
-    	this.timeout = 1000;
-    }
+    this.timeout = 1000;
+}
 
-    /**
+/**
      * This class contains the orientation information from the phone
      * @constructor
      * @param {Number} azimuth The rotation around the Z axis (0<=azimuth<360).
@@ -47,48 +46,48 @@
      * @param {Number} roll The rotation around Y axis (-90<=roll<=90),
      * with positive values when the z-axis moves toward the x-axis.
      */
-    function Orientation(azimuth, pitch, roll) {
-	this.azimuth = azimuth;
-	this.pitch = pitch;
-	this.roll = roll;
-    }
+function Orientation(azimuth, pitch, roll) {
+    this.azimuth = azimuth;
+    this.pitch = pitch;
+    this.roll = roll;
+}
 
-    /**
+/**
      * This class specifies the options for requesting orientation data.
      * @constructor
      */
-    function OrientationOptions() {
-    	/**
+function OrientationOptions() {
+    /**
     	 * The timeout after which if orientation data cannot be obtained the errorCallback
     	 * is called.
     	 */
-    	this.timeout = 1000;
-    }
-    
-    
-    /**
+    this.timeout = 1000;
+}
+
+
+/**
      * This class provides access to device accelerometer data.
      * @constructor
      */
-    function Accelerometer() {
-    	/**
+function Accelerometer() {
+    /**
     	 * The last known acceleration.
     	 */
-    	this.lastAcceleration = null;
+    this.lastAcceleration = null;
 
-	/**
+    /**
 	 * The last known orientation.
 	 */
-	this.lastOrientation = null;
+    this.lastOrientation = null;
 
-	this.shakeListeners = {};
-	this.orientListeners = [];
-	this.accelListeners = [];
+    this.shakeListeners = {};
+    this.orientListeners = [];
+    this.accelListeners = [];
     
-    	this.shakeIDCount = 0;
-    }
-    
-    /**
+    this.shakeIDCount = 0;
+}
+
+/**
      * Asynchronously aquires the current acceleration.
      * @param {Function} successCallback The function to call when the acceleration
      * data is available
@@ -114,7 +113,7 @@
     }
 */
 
-    /**
+/**
      * Asynchronously aquires the current orientation.
      * @param {Function} successCallback The function to call when the orientation
      * data is available
@@ -139,8 +138,8 @@
 	}
     }
 */
-    
-    /**
+
+/**
      * Asynchronously aquires the acceleration repeatedly at a given interval.
      * @param {Function} successCallback The function to call each time the acceleration
      * data is available
@@ -159,7 +158,7 @@
     	}, frequency);
     }
 */
-    /**
+/**
      * Asynchronously aquires the orientation repeatedly at a given interval.
      * @param {Function} successCallback The function to call each time the orientation
      * data is available
@@ -178,181 +177,181 @@
     	}, frequency);
     }
 */    
-    /**
+/**
      * Clears the specified accelerometer watch.
      * @param {String} watchId The ID of the watch returned from #watchAcceleration.
      */
-    Accelerometer.prototype.clearWatch = function(watchId) {
-    	clearInterval(watchId);
-    }
-    
-    if (typeof navigator.accelerometer == "undefined") navigator.accelerometer = new Accelerometer();
-    
-    
-    
-    /**
+Accelerometer.prototype.clearWatch = function(watchId) {
+    clearInterval(watchId);
+}
+
+if (typeof navigator.accelerometer == "undefined") navigator.accelerometer = new Accelerometer();
+
+
+
+/**
      * This class provides access to the device media, interfaces to both sound and video
      * @constructor
      */
-    function Audio() {
- //   	this.src = src;
-    	this.callbacks = {};
-    }
-    
-    Audio.prototype.play = function(file) {
-    }
-    
-    Audio.prototype.pause = function(file) {
-    }
+function Audio() {
+    //   	this.src = src;
+    this.callbacks = {};
+}
 
-    Audio.prototype.resume = function(file) {
-    }
-    
-    Audio.prototype.stop = function(file) {
-    }
+Audio.prototype.play = function(file) {
+}
 
-    Audio.prototype.stopAll = function() {
-    }
+Audio.prototype.pause = function(file) {
+}
 
-    Audio.prototype.increaseMusicVolume = function() {
-    }
+Audio.prototype.resume = function(file) {
+}
 
-    Audio.prototype.decreaseMusicVolume = function() {
-    }
+Audio.prototype.stop = function(file) {
+}
 
-    Audio.prototype.setMusicVolume = function() {
-    }
+Audio.prototype.stopAll = function() {
+}
 
-    Audio.prototype.playDTMF = function(tone) {
-    }
+Audio.prototype.increaseMusicVolume = function() {
+}
 
-    Audio.prototype.stopDTMF = function() {
-    }
+Audio.prototype.decreaseMusicVolume = function() {
+}
 
-    
-    /**
+Audio.prototype.setMusicVolume = function() {
+}
+
+Audio.prototype.playDTMF = function(tone) {
+}
+
+Audio.prototype.stopDTMF = function() {
+}
+
+
+/**
      * This class contains information about any Audio errors.
      * @constructor
      */
-    function AudioError() {
-    	this.code = null,
-    	this.message = "";
-    }
-    
-    AudioError.MEDIA_ERR_ABORTED 		= 1;
-    AudioError.MEDIA_ERR_NETWORK 		= 2;
-    AudioError.MEDIA_ERR_DECODE 		= 3;
-    AudioError.MEDIA_ERR_NONE_SUPPORTED 	= 4;
-    
-    
-    if (typeof navigator.audio == "undefined") navigator.audio = new Audio();
-    
-    
-    /**
+function AudioError() {
+    this.code = null,
+    this.message = "";
+}
+
+AudioError.MEDIA_ERR_ABORTED 		= 1;
+AudioError.MEDIA_ERR_NETWORK 		= 2;
+AudioError.MEDIA_ERR_DECODE 		= 3;
+AudioError.MEDIA_ERR_NONE_SUPPORTED 	= 4;
+
+
+if (typeof navigator.audio == "undefined") navigator.audio = new Audio();
+
+
+/**
      * This class provides access to the device camera.
      * @constructor
      */
-    function Camera() {
-    	
-    }
+function Camera() {
     
-    /**
+}
+
+/**
      * 
      * @param {Function} successCallback
      * @param {Function} errorCallback
      * @param {Object} options
      */
-    Camera.prototype.getPicture = function(successCallback, errorCallback, options) {
-    	
-    }
+Camera.prototype.getPicture = function(successCallback, errorCallback, options) {
     
-    if (typeof navigator.camera == "undefined") navigator.camera = new Camera();
-    
-    
-    /**
+}
+
+if (typeof navigator.camera == "undefined") navigator.camera = new Camera();
+
+
+/**
      * This class provides access to the device contacts.
      * @constructor
      */
-    function Contact() {
-    	this.name = "";
-    	this.phone = "";
-    	this.address = "";
-    }
-    
-    /**
+function Contact() {
+    this.name = "";
+    this.phone = "";
+    this.address = "";
+}
+
+/**
      * 
      * @param {Object} successCallback
      * @param {Object} errorCallback
      * @param {Object} options
      */
-    Contact.prototype.get = function(successCallback, errorCallback, options) {
-    	
-    }
+Contact.prototype.get = function(successCallback, errorCallback, options) {
     
-    
-    function ContactManager() {
-    	// Dummy object to hold array of contacts
-    	this.contacts = [];
-    	this.timestap = new Date().getTime();
-    }
-    
-    ContactManager.prototype.get = function(successCallback, errorCallback, options) {
-    	// Interface
-    }
-    
-    if (typeof navigator.ContactManager == "undefined") navigator.ContactManager = new ContactManager();
-    
-    
-    /**
+}
+
+
+function ContactManager() {
+    // Dummy object to hold array of contacts
+    this.contacts = [];
+    this.timestap = new Date().getTime();
+}
+
+ContactManager.prototype.get = function(successCallback, errorCallback, options) {
+    // Interface
+}
+
+if (typeof navigator.ContactManager == "undefined") navigator.ContactManager = new ContactManager();
+
+
+/**
      * This class provides generic read and write access to the mobile device file system.
      */
-    function File() {
-    	/**
+function File() {
+    /**
     	 * The data of a file.
     	 */
-    	this.data = "";
-    	/**
+    this.data = "";
+    /**
     	 * The name of the file.
     	 */
-    	this.name = "";
-    }
-    
-    /**
+    this.name = "";
+}
+
+/**
      * Reads a file from the mobile device. This function is asyncronous.
      * @param {String} fileName The name (including the path) to the file on the mobile device. 
      * The file name will likely be device dependant.
      * @param {Function} successCallback The function to call when the file is successfully read.
      * @param {Function} errorCallback The function to call when there is an error reading the file from the device.
      */
-    File.prototype.read = function(fileName, successCallback, errorCallback) {
-    	
-    }
+File.prototype.read = function(fileName, successCallback, errorCallback) {
     
-    /**
+}
+
+/**
      * Writes a file to the mobile device.
      * @param {File} file The file to write to the device.
      */
-    File.prototype.write = function(file) {
-    	
-    }
+File.prototype.write = function(file) {
     
-    if (typeof navigator.file == "undefined") navigator.file = new File();
-    
-    
-    /**
+}
+
+if (typeof navigator.file == "undefined") navigator.file = new File();
+
+
+/**
      * This class provides access to device GPS data.
      * @constructor
      */
-    function Geolocation() {
-    	/**
+function Geolocation() {
+    /**
     	 * The last known GPS position.
     	 */
-    	this.lastPosition = {latitude: 0, longitude: 0};
+    this.lastPosition = {latitude: 0, longitude: 0};
 
-	this.listeners = [];
-    }
-    
-    /**
+    this.listeners = [];
+}
+
+/**
      * Asynchronously aquires the current position.
      * @param {Function} successCallback The function to call when the position
      * data is available
@@ -361,10 +360,10 @@
      * @param {PositionOptions} options The options for getting the position data
      * such as timeout.
      */
-    Geolocation.prototype.getCurrentPosition = function(successCallback, errorCallback, options) {
-    	// If the position is available then call success
-    	// If the position is not available then call error
-    }
+Geolocation.prototype.getCurrentPosition = function(successCallback, errorCallback, options) {
+    // If the position is available then call success
+    // If the position is not available then call error
+}
 
 
 
@@ -374,8 +373,8 @@ Geolocation.prototype.getDistanceBetween = function(lat1, long1, lat2, long2) {
     return Geo.getDistanceBetween(lat1, long1, lat2, long2);
 }
 
-    
-    /**
+
+/**
      * Asynchronously aquires the position repeatedly at a given interval.
      * @param {Function} successCallback The function to call each time the position
      * data is available
@@ -384,91 +383,91 @@ Geolocation.prototype.getDistanceBetween = function(lat1, long1, lat2, long2) {
      * @param {PositionOptions} options The options for getting the position data
      * such as timeout and the frequency of the watch.
      */
-    Geolocation.prototype.watchPosition = function(successCallback, errorCallback, options) {
-    	// Invoke the appropriate callback with a new Position object every time the implementation 
-    	// determines that the position of the hosting device has changed. 
-    	
-    	this.getCurrentPosition(successCallback, errorCallback, options);
-    	var frequency = (options != undefined)? options.frequency : 10000;
-    	
-    	var that = this;
-    	return setInterval(function() {
-    		that.getCurrentPosition(successCallback, errorCallback, options);
-    		//navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options);
-    	}, frequency);
-    }
+Geolocation.prototype.watchPosition = function(successCallback, errorCallback, options) {
+    // Invoke the appropriate callback with a new Position object every time the implementation 
+    // determines that the position of the hosting device has changed. 
     
+    this.getCurrentPosition(successCallback, errorCallback, options);
+    var frequency = (options != undefined)? options.frequency : 10000;
     
-    /**
+    var that = this;
+    return setInterval(function() {
+    	that.getCurrentPosition(successCallback, errorCallback, options);
+    	//navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options);
+    }, frequency);
+}
+
+
+/**
      * Clears the specified position watch.
      * @param {String} watchId The ID of the watch returned from #watchPosition.
      */
-    Geolocation.prototype.clearWatch = function(watchId) {
-    	clearInterval(watchId);
-    }
-    
-    if (typeof navigator.geolocation == "undefined") navigator.geolocation = new Geolocation();
-    
-    
-    /**
+Geolocation.prototype.clearWatch = function(watchId) {
+    clearInterval(watchId);
+}
+
+if (typeof navigator.geolocation == "undefined") navigator.geolocation = new Geolocation();
+
+
+/**
      * This class provides access to native mapping applications on the device.
      */
-    function Map() {
-    	
-    }
+function Map() {
     
-    /**
+}
+
+/**
      * Shows a native map on the device with pins at the given positions.
      * @param {Array} positions
      */
-    Map.prototype.show = function(positions) {
-    	
-    }
+Map.prototype.show = function(positions) {
     
-    if (typeof navigator.map == "undefined") navigator.map = new Map();
-    
-    
-    /**
+}
+
+if (typeof navigator.map == "undefined") navigator.map = new Map();
+
+
+/**
      * This class provides access to notifications on the device.
      */
-    function Notification() {
-    	
-    }
+function Notification() {
     
-    /**
+}
+
+/**
      * Causes the device to blink a status LED.
      * @param {Integer} count The number of blinks.
      * @param {String} colour The colour of the light.
      */
-    Notification.prototype.blink = function(count, colour) {
-    	
-    }
+Notification.prototype.blink = function(count, colour) {
     
-    /**
+}
+
+/**
      * Causes the device to vibrate.
      * @param {Integer} mills The number of milliseconds to vibrate for.
      */
-    Notification.prototype.vibrate = function(mills) {
-    	
-    }
+Notification.prototype.vibrate = function(mills) {
     
-    /**
+}
+
+/**
      * Causes the device to beep.
      * @param {Integer} count The number of beeps.
      * @param {Integer} volume The volume of the beep.
      */
-    Notification.prototype.beep = function(count, volume) {
-    	
-    }
+Notification.prototype.beep = function(count, volume) {
     
-    // TODO: of course on Blackberry and Android there notifications in the UI as well
-    
-    if (typeof navigator.notification == "undefined") navigator.notification = new Notification();
-    
-    
-    
-    
-    /**
+}
+
+// TODO: of course on Blackberry and Android there notifications in the UI as well
+
+if (typeof navigator.notification == "undefined") navigator.notification = new Notification();
+
+
+
+
+/**
      * This class contains position information.
      * @param {Object} lat
      * @param {Object} lng
@@ -479,82 +478,82 @@ Geolocation.prototype.getDistanceBetween = function(lat1, long1, lat2, long2) {
      * @param {Object} vel
      * @constructor
      */
-    function Position(lat, lng, acc, alt, altacc, head, vel) {
-    	/**
+function Position(lat, lng, acc, alt, altacc, head, vel) {
+    /**
     	 * The latitude of the position.
     	 */
-    	this.latitude = lat;
-    	/**
+    this.latitude = lat;
+    /**
     	 * The longitude of the position,
     	 */
-    	this.longitude = lng;
-    	/**
+    this.longitude = lng;
+    /**
     	 * The accuracy of the position.
     	 */
-    	this.accuracy = acc;
-    	/**
+    this.accuracy = acc;
+    /**
     	 * The altitude of the position.
     	 */
-    	this.altitude = alt;
-    	/**
+    this.altitude = alt;
+    /**
     	 * The altitude accuracy of the position.
     	 */
-    	this.altitudeAccuracy = altacc;
-    	/**
+    this.altitudeAccuracy = altacc;
+    /**
     	 * The direction the device is moving at the position.
     	 */
-    	this.heading = head;
-    	/**
+    this.heading = head;
+    /**
     	 * The velocity with which the device is moving at the position.
     	 */
-    	this.velocity = vel;
-    	/**
+    this.velocity = vel;
+    /**
     	 * The time that the position was obtained.
     	 */
-    	this.timestamp = new Date().getTime();
-    }
-    
-    /**
+    this.timestamp = new Date().getTime();
+}
+
+/**
      * This class specifies the options for requesting position data.
      * @constructor
      */
-    function PositionOptions() {
-    	/**
+function PositionOptions() {
+    /**
     	 * Specifies the desired position accuracy.
     	 */
-    	this.enableHighAccuracy = true;
-    	/**
+    this.enableHighAccuracy = true;
+    /**
     	 * The timeout after which if position data cannot be obtained the errorCallback
     	 * is called.
     	 */
-    	this.timeout = 10000;
-    }
-    
-    /**
+    this.timeout = 10000;
+}
+
+/**
      * This class contains information about any GSP errors.
      * @constructor
      */
-    function PositionError() {
-    	this.code = null;
-    	this.message = "";
-    }
-    
-    PositionError.UNKNOWN_ERROR = 0;
-    PositionError.PERMISSION_DENIED = 1;
-    PositionError.POSITION_UNAVAILABLE = 2;
-    PositionError.TIMEOUT = 3;
-    
-    
-    
-    /**
+function PositionError() {
+    this.code = null;
+    this.message = "";
+}
+
+PositionError.UNKNOWN_ERROR = 0;
+PositionError.PERMISSION_DENIED = 1;
+PositionError.POSITION_UNAVAILABLE = 2;
+PositionError.TIMEOUT = 3;
+
+
+
+/**
      * This class provides access to the device SMS functionality.
      * @constructor
      */
-    function Sms() {
-    	this.listeners = [];
-    }
-    
-    /**
+function Sms() {
+    this.listeners = [];
+}
+
+/**
      * Sends an SMS message.
      * @param {Integer} number The phone number to send the message to.
      * @param {String} msg The contents of the SMS message to send.
@@ -562,9 +561,9 @@ Geolocation.prototype.getDistanceBetween = function(lat1, long1, lat2, long2) {
      * @param {Function} errorCallback The function to call when there is an error sending the SMS message.
      * @param {PositionOptions} options The options for accessing the GPS location such as timeout and accuracy.
      */
-    Sms.prototype.send = function(number, msg) {
-    	Device.sendSmsMessage(number, msg);
-    }
+Sms.prototype.send = function(number, msg) {
+    Device.sendSmsMessage(number, msg);
+}
 
 /*
     Sms.prototype.listen = function(successCallback, errorCallback, options) {
@@ -578,34 +577,34 @@ Geolocation.prototype.getDistanceBetween = function(lat1, long1, lat2, long2) {
     	}
     }
 */
-    
-    if (typeof navigator.sms == "undefined") navigator.sms = new Sms();
-    
-    
-    /**
+
+if (typeof navigator.sms == "undefined") navigator.sms = new Sms();
+
+
+/**
      * This class provides access to the telephony features of the device.
      * @constructor
      */
-    function Telephony() {
-    	
-    }
+function Telephony() {
     
-    /**
+}
+
+/**
      * Calls the specifed number.
      * @param {Integer} number The number to be called.
      */
-    Telephony.prototype.call = function(number) {
-    	
-    }
+Telephony.prototype.call = function(number) {
     
-    if (typeof navigator.telephony == "undefined") navigator.telephony = new Telephony();
-   
+}
 
-   // Android specific overrides here
+if (typeof navigator.telephony == "undefined") navigator.telephony = new Telephony();
+
+
+// Android specific overrides here
 
 Notification.prototype.vibrate = function(mills)
 {
-  Device.vibrate(mills);
+    Device.vibrate(mills);
 }
 
 /**
@@ -616,7 +615,7 @@ Notification.prototype.vibrate = function(mills)
 
 Notification.prototype.beep = function(count, volume)
 {
-  Device.beep(count);
+    Device.beep(count);
 }
 
 
@@ -629,7 +628,7 @@ Audio.prototype.playMusic = function(file, endCallback) {
     Device.startPlayingAudio(file);
     this.callbacks[file] = endCallback;
 }
-    
+
 Audio.prototype.pauseMusic = function(file) {
     Device.pauseAudio(file);
 }
@@ -637,7 +636,7 @@ Audio.prototype.pauseMusic = function(file) {
 Audio.prototype.resumeMusic = function(file) {
     Device.resumeAudio(file);
 }
-    
+
 Audio.prototype.stopMusic = function(file) {
     Device.stopPlayingAudio(file);
     delete this.callbacks[file];
@@ -650,8 +649,8 @@ Audio.prototype.stopAllMusic = function() {
 
 Audio.prototype.musicFinished = function() {
     var file = Args.get("finishedMusicFile");
-//    Console.println("In musicFinshed for " + file);
-//    Console.println("typeof this.callbacks[file] = " + typeof this.callbacks[file]);
+    //    Console.println("In musicFinshed for " + file);
+    //    Console.println("typeof this.callbacks[file] = " + typeof this.callbacks[file]);
 
     if (typeof this.callbacks[file] != "undefined") {
     	this.callbacks[file]();
@@ -703,28 +702,28 @@ Audio.FLAG_VIBRATE = 16;
 
 Geolocation.prototype.getCurrentPosition = function(successCallback, errorCallback, options)
 {
-  Geolocation.global_success = successCallback;
-  Geolocation.fail = errorCallback;
-  Geo.getCurrentLocation();
+    Geolocation.global_success = successCallback;
+    Geolocation.fail = errorCallback;
+    Geo.getCurrentLocation();
 }
 
 // Run the global callback
 Geolocation.gotCurrentPosition = function() {
     var lat = Args.get("gpsLat");
     var lng = Args.get("gpsLng");
-//  Console.println("Got position " + lat + ", " + lng);
-  
-  if (lat == null || lng == null)
-  {
-    this.fail();
-  }
-  else
-  {
-    p = {};
-    p.latitude = lat;
-    p.longitude = lng;
-    this.global_success(p);
-  }
+    //  Console.println("Got position " + lat + ", " + lng);
+    
+    if (lat == null || lng == null)
+    {
+	this.fail();
+    }
+    else
+    {
+	p = {};
+	p.latitude = lat;
+	p.longitude = lng;
+	this.global_success(p);
+    }
 }
 
 
@@ -738,7 +737,7 @@ Geolocation.prototype.watchPosition = function(successCallback, errorCallback, o
 {
     var frequency = (options != undefined)? options.frequency : 10000;
 
-//    Console.println("options.frequency = " + ((options != undefined)? options.frequency : 10000));
+    //    Console.println("options.frequency = " + ((options != undefined)? options.frequency : 10000));
 
     if (!this.listeners)
     {
@@ -747,8 +746,8 @@ Geolocation.prototype.watchPosition = function(successCallback, errorCallback, o
     }
 
     var key = this.listeners.push( {"success" : successCallback, "fail" : errorCallback }) - 1;
-  
-//    Console.logd("Geoloc watchPosition", "Starting to watch position. key " + key + ", freq " + frequency);
+    
+    //    Console.logd("Geoloc watchPosition", "Starting to watch position. key " + key + ", freq " + frequency);
 
     // TODO: Get the names of the method and pass them as strings to the Java.
     return Geo.start(frequency, key);
@@ -765,13 +764,13 @@ Geolocation.prototype.success = function(key, lat, lng)
     var lng = Args.get("gpsLng");
 
     Console.println("Success for finding location " + lat + ", " + lng + " with key " + key);
-//    Console.println("typeof this.listeners = " + (typeof this.listeners));
+    //    Console.println("typeof this.listeners = " + (typeof this.listeners));
 
     if (key == null) {
-	    Console.logd("PhoneGap", "Geolocation key undefined in Geolocation.success");
+	Console.logd("PhoneGap", "Geolocation key undefined in Geolocation.success");
     }
     else if (lat == null || lng == null) {
-	    this.listeners[key].fail();
+	this.listeners[key].fail();
     }
 
 
@@ -784,12 +783,12 @@ Geolocation.prototype.success = function(key, lat, lng)
 
 Geolocation.prototype.fail = function(key)
 {
-  this.listeners[key].fail();
+    this.listeners[key].fail();
 }
 
 Geolocation.prototype.clearWatch = function(watchId)
 {
-  Geo.stop(watchId);
+    Geo.stop(watchId);
 }
 
 /* Identical to the iPhone, except we have to create this in the JS */
@@ -875,9 +874,9 @@ var defShakeSpan = 250;
 var defShakeDelay = 1000;
 
 Accelerometer.prototype.watchShake = function(successCallback, errorCallback, options) {
-//    if (!this.shakeListeners) {
-//    	this.shakeListeners = [];
-//    }
+    //    if (!this.shakeListeners) {
+    //    	this.shakeListeners = [];
+    //    }
     Accel.start();
 
     var shakeUID = "shakeListener" + (this.shakeIDCount++);
@@ -902,15 +901,15 @@ Accelerometer.prototype.watchShake = function(successCallback, errorCallback, op
     var that = this;
     return function() {
     	if (typeof that.shakeListeners[shakeUID] != "undefined") {
-		delete that.shakeListeners[shakeUID];
+	    delete that.shakeListeners[shakeUID];
 	}
 
 	Accel.removeShakeListener(shakeUID);
     	
-//    	var index = that.shakeListeners.indexOf(callBacks);
-//    	Console.println("Removing the shake listener at index " + index);
-//    	if (index != -1)
- //   	    that.shakeListeners.splice(index, 1);
+	//    	var index = that.shakeListeners.indexOf(callBacks);
+	//    	Console.println("Removing the shake listener at index " + index);
+	//    	if (index != -1)
+	//   	    that.shakeListeners.splice(index, 1);
 
     	if (navigator.accelerometer.allListenersEmpty()) {
     	    Console.println("Stopping Accel");
@@ -920,21 +919,21 @@ Accelerometer.prototype.watchShake = function(successCallback, errorCallback, op
 }
 
 Accelerometer.prototype.gotShaken = function() {
-//    Console.println("gotShaken called");
+    //    Console.println("gotShaken called");
 
     var shakenUIDs = Args.get("shakeIDs");
 
     for (var i = 0; i < shakenUIDs.size(); i++) {
-	    var callback = this.shakeListeners[shakenUIDs.get(i)];
+	var callback = this.shakeListeners[shakenUIDs.get(i)];
 
-	    if (typeof callback != "undefined") {
-		    callback.success();
-	    }
+	if (typeof callback != "undefined") {
+	    callback.success();
+	}
     }
 
-//    for (var i = 0; i < this.shakeListeners.length; i++) {
-//    	this.shakeListeners[i].success();
-//    }
+    //    for (var i = 0; i < this.shakeListeners.length; i++) {
+    //    	this.shakeListeners[i].success();
+    //    }
 }
 
 //Accelerometer.prototype.stopShakeWatch = function(shakeId) {
@@ -951,7 +950,7 @@ Accelerometer.prototype.gotShaken = function() {
 //}
 
 Accelerometer.prototype.getCurrentAcceleration = function(successCallback, errorCallback, options) {
-//    Console.println("getting current acceleration");
+    //    Console.println("getting current acceleration");
     
     var accel = new Acceleration( Accel.getX(), Accel.getY(), Accel.getZ() );
     Accelerometer.lastAcceleration = accel;
@@ -959,7 +958,7 @@ Accelerometer.prototype.getCurrentAcceleration = function(successCallback, error
 }
 
 Accelerometer.prototype.getCurrentOrientation = function(successCallback, errorCallback, options) {
-//    Console.println("getting current orientation");
+    //    Console.println("getting current orientation");
     
     var orient = new Orientation( Accel.getAzimuth(), Accel.getPitch(), Accel.getRoll() );
     Accelerometer.lastOrienetation = orient;
@@ -978,7 +977,7 @@ Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallb
     	navigator.accelerometer.getCurrentAcceleration(successCallback, errorCallback, options);
     }, frequency);
     this.accelListeners.push(id);
-	
+    
     var that = this;
     return function () {Accelerometer.clearTypeWatch(that.accelListeners, id);};
 }
@@ -987,14 +986,14 @@ Accelerometer.prototype.watchAcceleration = function(successCallback, errorCallb
 Accelerometer.prototype.watchOrientation = function(successCallback, errorCallback, options)
 {
     Accel.start();
-	
+    
     navigator.accelerometer.getCurrentOrientation(successCallback, errorCallback, options);
     var frequency = (options != undefined)? options.frequency : 100;
     navigator.accelerometer.getCurrentOrientation(successCallback, errorCallback, options);
     var frequency = (options != undefined)? options.frequency : 100;
 
     var id = setInterval(function() {
-       navigator.accelerometer.getCurrentOrientation(successCallback, errorCallback, options);
+	navigator.accelerometer.getCurrentOrientation(successCallback, errorCallback, options);
     }, frequency);
     this.orientListeners.push(id);
     
@@ -1004,7 +1003,7 @@ Accelerometer.prototype.watchOrientation = function(successCallback, errorCallba
 
 Accelerometer.clearTypeWatch = function(list, watchId) {
     clearInterval(watchId);
-	var index = list.indexOf(watchId);
+    var index = list.indexOf(watchId);
     if (index != -1)
     	list.splice(index, 1);
 
@@ -1032,33 +1031,55 @@ Accelerometer.prototype.clearAllWatches = function() {
     Accel.stop();
 }
 
+
+
+(function() {
 /**
  * Used to keep the phone awake while the app is running
  */
-function Power() {
-}
+    function Power() {
+    }
 
-Power.prototype.finish = function() {
+    Power.prototype.finish = function() {
 	Device.finish();
-}
+    }
 
-Power.FULL_WAKE_LOCK = 26;
-Power.PARTIAL_WAKE_LOCK = 1;
-Power.SCREEN_BRIGHT_WAKE_LOCK = 10;
-Power.SCREEN_DIM_WAKE_LOCK = 6;
+    Power.FULL_WAKE_LOCK = 26;
+    Power.PARTIAL_WAKE_LOCK = 1;
+    Power.SCREEN_BRIGHT_WAKE_LOCK = 10;
+    Power.SCREEN_DIM_WAKE_LOCK = 6;
 
 
-// setWakeLock: (or undefined number) -> void
-Power.prototype.setWakeLock = function(flags) {
-//    Console.println("Setting a wake lock");
-    var lockType = (typeof flags == "undefined")? Power.SCREEN_DIM_WAKE_LOCK : flags;
-    Device.setWakeLock(lockType);
-//    Console.println("WakeLock set");
-}
+    // setWakeLock: (or undefined number) -> void
+    Power.prototype.setWakeLock = function(flags) {
+	//    Console.println("Setting a wake lock");
+	var lockType = (typeof flags == "undefined")? Power.SCREEN_DIM_WAKE_LOCK : flags;
+	Device.setWakeLock(lockType);
+	//    Console.println("WakeLock set");
+    }
 
-Power.prototype.releaseWakeLock = function() {
-//    Console.println("Releasing wake lock");
-    Device.releaseWakeLock();
-}
+    Power.prototype.releaseWakeLock = function() {
+	//    Console.println("Releasing wake lock");
+	Device.releaseWakeLock();
+    }
 
-if (typeof navigator.power == "undefined") navigator.power = new Power();
+    if (typeof navigator.power == "undefined") navigator.power = new Power();
+}());
+
+
+
+
+
+
+
+(function() {
+    function DialogPickers() {
+    }
+
+    DialogPickers.prototype.pickPlaylist = function(callback) {
+	PlaylistPicker.getPlaylist();
+	// fixme: handle attaching the callback.
+    };
+
+    if (typeof navigator.dialogPickers == 'undefined') navigator.dialogPickers = news DialogPickers();
+}());
