@@ -38,23 +38,23 @@ import android.webkit.WebView;
 
 public class DroidGap extends Activity {
 	
-	private static final String LOG_TAG = "DroidGap";
-	private WebView appView;
-	private String uri;
+    private static final String LOG_TAG = "DroidGap";
+    private WebView appView;
+    private String uri;
 
-	private PhoneGap gap;
-	private GeoBroker geo;
-	private AccelListener accel;
-	private ConsoleOutput console;
-	private ArgTable arguments;
+    private PhoneGap gap;
+    private GeoBroker geo;
+    private AccelListener accel;
+    private ConsoleOutput console;
+    private ArgTable arguments;
 	
     /** Called when the activity is first created. */
-	@Override
-    public void onCreate(Bundle savedInstanceState) {
+    @Override
+	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE); 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN); 
+			     WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN); 
         setContentView(R.layout.main);        
          
         appView = (WebView) findViewById(R.id.appView);
@@ -75,21 +75,21 @@ public class DroidGap extends Activity {
         int i = 0;
         
         try {
-          f = c.getField("url");
-          i = f.getInt(f);
-          this.uri = this.getResources().getString(i);
+	    f = c.getField("url");
+	    i = f.getInt(f);
+	    this.uri = this.getResources().getString(i);
         } catch (Exception e)
-        {
-          this.uri = "http://www.phonegap.com";
-        }
+	    {
+		this.uri = "http://www.phonegap.com";
+	    }
         appView.loadUrl(this.uri);
         
     }
 	
-	@Override
-    public void onConfigurationChanged(Configuration newConfig) {
-      //don't reload the current page when the orientation is changed
-      super.onConfigurationChanged(newConfig);
+    @Override
+	public void onConfigurationChanged(Configuration newConfig) {
+	//don't reload the current page when the orientation is changed
+	super.onConfigurationChanged(newConfig);
     } 
     
     private void bindBrowser(WebView appView)
@@ -126,11 +126,11 @@ public class DroidGap extends Activity {
     	Context mCtx;
     	GapClient(Context ctx)
     	{
-    		mCtx = ctx;
+	    mCtx = ctx;
     	}
     	
     	@Override
-        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+	    public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
             Log.d(LOG_TAG, message);
             // This shows the dialog box.  This can be commented out for dev
             AlertDialog.Builder alertBldr = new AlertDialog.Builder(mCtx);
