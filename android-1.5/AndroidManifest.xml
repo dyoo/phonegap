@@ -30,5 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="plt.playlist.PickPlaylist"
+                  android:label="PickPlaylist">
+                <action android:name="android.intent.action.PICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+        </activity>
+
     </application>
 </manifest> 
