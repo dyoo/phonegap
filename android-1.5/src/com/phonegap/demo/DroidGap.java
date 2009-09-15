@@ -90,10 +90,10 @@ public class DroidGap extends Activity {
 	    {
 		this.uri = "http://www.phonegap.com";
 	    }
-        appView.loadUrl(this.uri);
-        
+        appView.loadUrl(this.uri);        
     }
 	
+
     @Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	//don't reload the current page when the orientation is changed
@@ -120,15 +120,45 @@ public class DroidGap extends Activity {
     }
 
 
+    public void onPause() {
+	System.out.println("Being paused");
+	super.onPause();
+    }
+
+
+    public void onResume() {
+	System.out.println("Being resumed");
+	super.onResume();
+    }
+
+
 
     public void onStop() {
-    	System.out.println("Stopping everything");
+    	System.out.println("Being stopping");
     	gap.stop();
     	geo.stop();
     	accel.stop();
-	appView.destroy();
     	super.onStop();
     }
+
+
+    public void onRestart() {
+	System.out.println("Being restarted");
+	gap.restart();
+	geo.restart();
+	accel.restart();
+	super.onRestart();
+    }
+
+
+
+
+    public void onDestroy() {
+	appView.destroy();
+	super.onDestroy();
+    }
+
+
         
     /**
      * Provides a hook for calling "alert" from javascript. Useful for
@@ -173,12 +203,17 @@ public class DroidGap extends Activity {
 	this.startActivityForResult(intent, PLAYLIST_PICKED);
     }
 
+
+
     protected void onActivityResult(int requestCode, 
 				    int resultCode,
-				    Intent data) {
+				    Intent intent) {
 	if (resultCode == RESULT_OK) {
 	    switch (requestCode) {
 	    case PLAYLIST_PICKED:
+		System.out.println("I got a playlist selected.");
+		plt.playlist.PlaylistRecord record = 
+		    (plt.playlist.PlaylistRecord) intent.getSerializableExtra("value");
 		break;
 	    default:
 	    };

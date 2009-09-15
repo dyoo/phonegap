@@ -67,4 +67,9 @@ public class GeoBroker {
 		}
 		geoListeners.clear();
 	}
+
+
+    public void restart() {
+	// FILL ME IN
+    }
 }

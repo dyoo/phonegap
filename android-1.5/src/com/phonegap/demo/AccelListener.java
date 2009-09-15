@@ -112,6 +112,12 @@ public class AccelListener implements SensorListener{
 		sensorManager.unregisterListener(this);
 	}
 
+    public void restart() {
+	// fill me in
+    }
+
+
+
 	public void addShakeListener(String uid, float changeMag, int shakeSpan, int shakeDelay) {
 		shakeListeners.put(uid, new ShakeListener(uid, changeMag, shakeSpan, shakeDelay, x, y, z));
 	}

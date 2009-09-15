@@ -429,6 +429,10 @@ public class PhoneGap {
     	releaseWakeLock();
     }
 
+    public void restart() {
+	// FILL ME IN
+    }
+
 
     
 }

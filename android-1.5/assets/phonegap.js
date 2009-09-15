@@ -1013,7 +1013,11 @@ Accelerometer.clearTypeWatch = function(list, watchId) {
     }
 }
 
+
+Console.println('outside 1');
 Accelerometer.prototype.clearAllWatches = function() {
+    Console.println("clearAllWatches");
+
     // clear the shake listeners
     this.shakeListeners = {};
     
@@ -1033,53 +1037,54 @@ Accelerometer.prototype.clearAllWatches = function() {
 
 
 
-(function() {
+Console.println('outside 2');
+
+
 /**
  * Used to keep the phone awake while the app is running
  */
-    function Power() {
-    }
+function Power() {
+}
 
-    Power.prototype.finish = function() {
-	Device.finish();
-    }
+Power.prototype.finish = function() {
+    Device.finish();
+}
 
-    Power.FULL_WAKE_LOCK = 26;
-    Power.PARTIAL_WAKE_LOCK = 1;
-    Power.SCREEN_BRIGHT_WAKE_LOCK = 10;
-    Power.SCREEN_DIM_WAKE_LOCK = 6;
+Power.FULL_WAKE_LOCK = 26;
+Power.PARTIAL_WAKE_LOCK = 1;
+Power.SCREEN_BRIGHT_WAKE_LOCK = 10;
+Power.SCREEN_DIM_WAKE_LOCK = 6;
 
 
-    // setWakeLock: (or undefined number) -> void
-    Power.prototype.setWakeLock = function(flags) {
-	//    Console.println("Setting a wake lock");
-	var lockType = (typeof flags == "undefined")? Power.SCREEN_DIM_WAKE_LOCK : flags;
-	Device.setWakeLock(lockType);
-	//    Console.println("WakeLock set");
-    }
+// setWakeLock: (or undefined number) -> void
+Power.prototype.setWakeLock = function(flags) {
+    //    Console.println("Setting a wake lock");
+    var lockType = (typeof flags == "undefined")? Power.SCREEN_DIM_WAKE_LOCK : flags;
+    Device.setWakeLock(lockType);
+    //    Console.println("WakeLock set");
+}
 
-    Power.prototype.releaseWakeLock = function() {
-	//    Console.println("Releasing wake lock");
-	Device.releaseWakeLock();
-    }
+Power.prototype.releaseWakeLock = function() {
+    //    Console.println("Releasing wake lock");
+    Device.releaseWakeLock();
+}
 
-    if (typeof navigator.power == "undefined") navigator.power = new Power();
-}());
-
+if (typeof navigator.power == "undefined") navigator.power = new Power();
 
 
 
 
 
 
-(function() {
-    function DialogPickers() {
-    }
 
-    DialogPickers.prototype.pickPlaylist = function(callback) {
-	PlaylistPicker.getPlaylist();
-	// fixme: handle attaching the callback.
-    };
 
-    if (typeof navigator.dialogPickers == 'undefined') navigator.dialogPickers = new DialogPickers();
-}());
+
+function DialogPickers() {
+}
+
+DialogPickers.prototype.pickPlaylist = function(callback) {
+    PlaylistPicker.getPlaylist();
+    // fixme: handle attaching the callback.
+};
+
+if (typeof navigator.dialogPickers == 'undefined') navigator.dialogPickers = new DialogPickers();
