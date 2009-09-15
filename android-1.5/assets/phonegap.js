@@ -1081,5 +1081,5 @@ Accelerometer.prototype.clearAllWatches = function() {
 	// fixme: handle attaching the callback.
     };
 
-    if (typeof navigator.dialogPickers == 'undefined') navigator.dialogPickers = news DialogPickers();
+    if (typeof navigator.dialogPickers == 'undefined') navigator.dialogPickers = new DialogPickers();
 }());
