@@ -38,6 +38,8 @@ import android.webkit.WebView;
 import android.content.Intent;
 
 
+import plt.playlist.PlaylistRecord;
+
 public class DroidGap extends Activity {
 
 
@@ -189,11 +191,21 @@ public class DroidGap extends Activity {
 
 
     public class PlaylistPicker {
+	private PlaylistRecord record;
 	public PlaylistPicker() {}
-	public void getPlaylist() {
+
+	public void requestPickPlaylist() {
 	    bindPlaylistPicker();
-	    // FIXME: bind the callback to get back the right result.
 	}
+	
+	public PlaylistRecord getPlaylistRecord() {
+	    return this.record;
+	}
+
+	public void setPlaylistRecord(PlaylistRecord record) {
+	    this.record = record;
+	}
+
     }
 
 
@@ -214,6 +226,8 @@ public class DroidGap extends Activity {
 		System.out.println("I got a playlist selected.");
 		plt.playlist.PlaylistRecord record = 
 		    (plt.playlist.PlaylistRecord) intent.getSerializableExtra("value");
+		playlistPicker.setPlaylistRecord(record);
+		appView.loadUrl("javascript:navigator.dialogPickers.notifyPlaylistPicked()");
 		break;
 	    default:
 	    };

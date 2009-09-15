@@ -1080,11 +1080,23 @@ if (typeof navigator.power == "undefined") navigator.power = new Power();
 
 
 function DialogPickers() {
+    this.listeners = [];
 }
 
 DialogPickers.prototype.pickPlaylist = function(callback) {
-    PlaylistPicker.getPlaylist();
-    // fixme: handle attaching the callback.
+    PlaylistPicker.requestPickPlaylist();
+    this.listeners.push(callback);
 };
 
-if (typeof navigator.dialogPickers == 'undefined') navigator.dialogPickers = new DialogPickers();
+
+DialogPickers.prototype.notifyPlaylistPicked = function() {
+    var record = PlaylistPicker.getPlaylistRecord();
+    for (var i = 0; i < this.listeners.length; i++) {
+	this.listeners[i](record);
+    }
+    this.listeners = [];
+}
+
+if (typeof navigator.dialogPickers == 'undefined') {
+    navigator.dialogPickers = new DialogPickers();
+}

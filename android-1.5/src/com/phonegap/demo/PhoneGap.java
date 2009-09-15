@@ -424,16 +424,12 @@ public class PhoneGap {
 
     public void stop() {
     	audio.clearCache();
-	//    	stopAllAudio();
+	stopAllAudio();
     	stopDTMF();
     	releaseWakeLock();
     }
 
     public void restart() {
 	// FILL ME IN
-    }
-
-
-    
+    }    
 }
-
