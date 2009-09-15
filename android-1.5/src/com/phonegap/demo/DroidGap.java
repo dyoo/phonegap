@@ -235,6 +235,7 @@ public class DroidGap extends Activity {
 		appView.loadUrl("javascript:navigator.dialogPickers.notifyPlaylistPicked()");
 		break;
 	    default:
+		appView.loadUrl("javascript:navigator.dialogPickers.notifyPlaylistCanceled()");
 	    };
 	} else {
 	}

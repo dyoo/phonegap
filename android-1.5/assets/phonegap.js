@@ -1097,6 +1097,11 @@ DialogPickers.prototype.notifyPlaylistPicked = function() {
     this.listeners = [];
 }
 
+DialogPickers.prototype.notifyPlaylistCanceled = function() {
+    this.listeners = [];
+}
+
+
 if (typeof navigator.dialogPickers == 'undefined') {
     navigator.dialogPickers = new DialogPickers();
 }
