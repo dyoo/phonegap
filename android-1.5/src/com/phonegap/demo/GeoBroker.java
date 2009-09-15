@@ -16,23 +16,23 @@ import android.location.Location;
  */
 
 public class GeoBroker {
-	private WebView mAppView;
-	private Context mCtx;
-	private ArgTable arguments;
-	private HashMap<String, GeoListener> geoListeners;
+    private WebView mAppView;
+    private Context mCtx;
+    private ArgTable arguments;
+    private HashMap<String, GeoListener> geoListeners;
 	
-	public GeoBroker(Context ctx, WebView view, ArgTable args)
-	{
-		mCtx = ctx;
-		mAppView = view;
-		arguments = args;
-		geoListeners = new HashMap<String, GeoListener>();
-	}
+    public GeoBroker(Context ctx, WebView view, ArgTable args)
+    {
+	mCtx = ctx;
+	mAppView = view;
+	arguments = args;
+	geoListeners = new HashMap<String, GeoListener>();
+    }
 	
-	public void getCurrentLocation()
-	{
-		GeoListener listener = new GeoListener("global", mCtx, 10000, mAppView, arguments);
-	}
+    public void getCurrentLocation()
+    {
+	GeoListener listener = new GeoListener("global", mCtx, 10000, mAppView, arguments);
+    }
 	
 
     public float getDistanceBetween(double lat1, double long1, 
@@ -44,32 +44,38 @@ public class GeoBroker {
     }
 
 
-	public String start(int freq, String key)
-	{
-//		Log.d("GeoBroker start", "Making new GeoListener with freq " + freq + " and key " + key);
-		GeoListener listener = new GeoListener(key, mCtx, freq, mAppView, arguments);
-		geoListeners.put(key, listener);
-		return key;
-	}
+    public String start(int freq, String key)
+    {
+	//		Log.d("GeoBroker start", "Making new GeoListener with freq " + freq + " and key " + key);
+	GeoListener listener = new GeoListener(key, mCtx, freq, mAppView, arguments);
+	geoListeners.put(key, listener);
+	return key;
+    }
 	
-	public void stop(String key)
-	{
-		GeoListener geo = geoListeners.remove(key);
-		if (geo != null) {
-			geo.stop();
-		}
+    public void stop(String key)
+    {
+	GeoListener geo = geoListeners.remove(key);
+	if (geo != null) {
+	    geo.stop();
 	}
+    }
 
-	public void stop()
-	{
-		for ( GeoListener geo : geoListeners.values() ) {
-			geo.stop();
-		}
-		geoListeners.clear();
-	}
-
+    public void stop() {
+	// FILL ME IN
+    }
+    
 
     public void restart() {
 	// FILL ME IN
     }
+
+
+    public void destroy() {
+	for ( GeoListener geo : geoListeners.values() ) {
+	    geo.stop();
+	}
+	geoListeners.clear();
+    }
+
+
 }

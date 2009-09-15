@@ -423,13 +423,21 @@ public class PhoneGap {
 
 
     public void stop() {
+	// FILL ME IN
+    }
+
+
+    public void restart() {
+	// FILL ME IN
+    }
+
+
+    public void destroy() {
+	// FILL ME IN
     	audio.clearCache();
 	stopAllAudio();
     	stopDTMF();
     	releaseWakeLock();
     }
 
-    public void restart() {
-	// FILL ME IN
-    }    
 }

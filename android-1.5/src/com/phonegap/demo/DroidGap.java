@@ -156,7 +156,12 @@ public class DroidGap extends Activity {
 
 
     public void onDestroy() {
+	System.out.println("Being destroyed");
 	appView.destroy();
+
+	gap.destroy();
+	geo.destroy();
+	accel.destroy();
 	super.onDestroy();
     }
 
