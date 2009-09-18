@@ -40,7 +40,8 @@ public class LocationProviderListener implements LocationListener {
 	public LocationProviderListener(Context ctx, int interval, GeoListener m)
 	{
 		Log.d("LocationProviderListener", 
-		      "Making new LocationProviderListener with interval " + interval);
+		      "Making new LocationProviderListener with interval " +
+		      interval + "milliseconds");
 		owner = m;
 		mLocMan = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
 

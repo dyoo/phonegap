@@ -735,7 +735,7 @@ Geolocation.gotCurrentPosition = function() {
 
 Geolocation.prototype.watchPosition = function(successCallback, errorCallback, options)
 {
-    var frequency = (options != undefined)? options.frequency : 10000;
+    var frequency = (options != undefined)? (options.frequency || 10000) : 10000;
 
     //    Console.println("options.frequency = " + ((options != undefined)? options.frequency : 10000));
 
