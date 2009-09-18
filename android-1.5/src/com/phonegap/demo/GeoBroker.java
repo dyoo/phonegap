@@ -46,7 +46,9 @@ public class GeoBroker {
 
     public String start(int freq, String key)
     {
-	//		Log.d("GeoBroker start", "Making new GeoListener with freq " + freq + " and key " + key);
+	Log.d("GeoBroker start",
+	      "Making new GeoListener with freq " + freq +
+	      " and key " + key);
 	GeoListener listener = new GeoListener(key, mCtx, freq, mAppView, arguments);
 	geoListeners.put(key, listener);
 	return key;

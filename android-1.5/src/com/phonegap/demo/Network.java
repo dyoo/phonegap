@@ -28,8 +28,9 @@ public class Network {
 	    in.close();
 	    writer.close();
 	    return w.getBuffer().toString();
-	} catch (Exception e) {
-	    return "";
+	} catch (Throwable e) {
+	    e.printStackTrace();
+	    return new String("");
 	}	
     }
 
