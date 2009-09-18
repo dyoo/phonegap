@@ -28,10 +28,8 @@ public class Network {
 	    in.close();
 	    writer.close();
 	    return w.getBuffer().toString();
-	} catch (MalformedURLException e) {
-	    throw new RuntimeException(e);
-	} catch (IOException e) {
-	    throw new RuntimeException(e);
+	} catch (Exception e) {
+	    return "";
 	}	
     }
 
