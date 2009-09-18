@@ -763,7 +763,7 @@ Geolocation.prototype.success = function(key, lat, lng)
     var lat = Args.get("gpsLat");
     var lng = Args.get("gpsLng");
 
-    Console.println("Success for finding location " + lat + ", " + lng + " with key " + key);
+    //    Console.println("Success for finding location " + lat + ", " + lng + " with key " + key);
     //    Console.println("typeof this.listeners = " + (typeof this.listeners));
 
     if (key == null) {
@@ -1014,7 +1014,7 @@ Accelerometer.clearTypeWatch = function(list, watchId) {
 }
 
 
-Console.println('outside 1');
+
 Accelerometer.prototype.clearAllWatches = function() {
     Console.println("clearAllWatches");
 
@@ -1037,7 +1037,6 @@ Accelerometer.prototype.clearAllWatches = function() {
 
 
 
-Console.println('outside 2');
 
 
 /**
