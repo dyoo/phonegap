@@ -29,9 +29,9 @@ public class Network {
 	    writer.close();
 	    return w.getBuffer().toString();
 	} catch (MalformedURLException e) {
-	    throw new RuntimeException(e);
+	    return "";
 	} catch (IOException e) {
-	    throw new RuntimeException(e);
+	    return "";
 	}	
     }
 
