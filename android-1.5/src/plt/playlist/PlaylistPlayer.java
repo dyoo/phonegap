@@ -35,8 +35,6 @@ public class PlaylistPlayer {
     private int delayBetweenSongs;
     private List<Uri> songs;
 
-    private State currentState;
-
     private boolean isPaused;
 
     public PlaylistPlayer(final Activity activity,
@@ -83,7 +81,8 @@ public class PlaylistPlayer {
 							    }
 							}
 						    }, SystemClock.uptimeMillis() +
-						    that.delayBetweenSongs);
+						that.delayBetweenSongs);
+					}
 				    });
 			    that.mediaPlayer.setDataSource
 				(that.activity,
@@ -127,9 +126,4 @@ public class PlaylistPlayer {
 		}
 	    });
     }
-
-
-
-
-
 }
