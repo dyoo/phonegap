@@ -81,6 +81,7 @@ public class PlaylistPlayer {
 		    try {
 			switch(that.currentState) {
 			case STOPPED:
+			case DELAYING_BETWEEN_SONGS:
 			    if (that.mediaPlayer == null) {
 				that.mediaPlayer = new MediaPlayer();
 				that.mediaPlayer.setLooping(false);
@@ -172,8 +173,6 @@ public class PlaylistPlayer {
 			case ABOUT_TO_PLAY:
 			    break;
 			case PLAYING_A_SONG:
-			    break;
-			case DELAYING_BETWEEN_SONGS:
 			    break;
 			};
 		    } catch (IOException e) {
