@@ -23,7 +23,9 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.util.Log;
 import android.webkit.WebView;
 
-public class AudioHandler implements OnCompletionListener, OnPreparedListener, OnErrorListener {
+public class AudioHandler implements OnCompletionListener, 
+				     OnPreparedListener,
+				     OnErrorListener {
     private MediaRecorder recorder;
     private boolean isRecording = false;
     //	MediaPlayer mPlayer;
