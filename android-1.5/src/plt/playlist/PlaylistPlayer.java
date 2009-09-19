@@ -62,6 +62,7 @@ public class PlaylistPlayer {
 
 	this.handler.post(new Runnable() {
 		public void run() {
+		    that.isPaused = false;
 		    try {
 			if (that.mediaPlayer == null) {
 			    that.mediaPlayer = new MediaPlayer();
@@ -123,6 +124,7 @@ public class PlaylistPlayer {
 			that.mediaPlayer.release();
 			that.mediaPlayer = null;
 		    }
+		    that.isPaused = false;
 		}
 	    });
     }
