@@ -37,6 +37,7 @@ public class PlaylistPlayer {
     private List<Uri> songs;
 
     private boolean isCurrentlyPlaying;
+    private boolean isStopped;
 
 
     public PlaylistPlayer(final Activity activity,
@@ -53,6 +54,7 @@ public class PlaylistPlayer {
 	    that.songs = record.getSongUris(activity);
 	    that.currentSongIndex = 0;
 	    that.isCurrentlyPlaying = false;
+	    that.isStopped = true;
 	    that.delayBetweenSongs = 2000;
 	}});
 
@@ -67,6 +69,8 @@ public class PlaylistPlayer {
 	this.handler.post(new Runnable() {
 		public void run() {
 		    try {
+			that.isStopped = false;
+
 			if (that.mediaPlayer == null) {
 			    that.mediaPlayer = new MediaPlayer();
 			    that.mediaPlayer.setLooping(false);
@@ -75,8 +79,10 @@ public class PlaylistPlayer {
 					public void onPrepared(final MediaPlayer mp) {
 					    that.handler.post(new Runnable() {
 						    public void run() {
-							that.mediaPlayer.start();
-							that.isCurrentlyPlaying = true;
+							if (! that.isStopped) {
+							    that.mediaPlayer.start();
+							    that.isCurrentlyPlaying = true;
+							}
 						    }
 						});
 					}
@@ -94,7 +100,9 @@ public class PlaylistPlayer {
 
 					    that.handler.postAtTime(new Runnable() {
 						    public void run() {
-							that.play();
+							if (! that.isStopped) {
+							    that.play();
+							}
 						    }
 						}, SystemClock.uptimeMillis() +
 						that.delayBetweenSongs);
@@ -125,12 +133,12 @@ public class PlaylistPlayer {
 	final PlaylistPlayer that = this;
 	this.handler.post(new Runnable() {
 		public void run() {
+		    that.isStopped = true;
 		    if (that.mediaPlayer == null) {
 		        return;
 		    } else if (that.isCurrentlyPlaying) {
 			that.mediaPlayer.pause();
 			that.isCurrentlyPlaying = false;
-		    } else {
 		    }
 		}
 	    });
@@ -141,11 +149,12 @@ public class PlaylistPlayer {
 	final PlaylistPlayer that = this;
 	this.handler.post(new Runnable() {
 		public void run() {
+		    that.isStopped = true;
 		    if (that.mediaPlayer == null) {
 		        return;
 		    } else if (that.isCurrentlyPlaying) {
-			that.mediaPlayer.seekTo(0);
 			that.mediaPlayer.pause();
+			that.mediaPlayer.seekTo(0);
 			that.isCurrentlyPlaying = false;
 		    }
 		}
