@@ -35,7 +35,8 @@ public class PlaylistPlayer {
     private int currentSongIndex;
     private int delayBetweenSongs;
     private List<Uri> songs;
-    private boolean isPlaying;
+
+    private boolean isCurrentlyPlaying;
 
 
     public PlaylistPlayer(final Activity activity,
@@ -51,7 +52,7 @@ public class PlaylistPlayer {
 	    that.volume = 100;
 	    that.songs = record.getSongUris(activity);
 	    that.currentSongIndex = 0;
-	    that.isPlaying = false;
+	    that.isCurrentlyPlaying = false;
 	    that.delayBetweenSongs = 2000;
 	}});
 
@@ -61,7 +62,7 @@ public class PlaylistPlayer {
 
     public void play() {
 	Log.d("PlaylistPlayer", 
-	      "play: isPlaying = " + isPlaying);
+	      "play: isCurrentlyPlaying = " + isCurrentlyPlaying);
 	final PlaylistPlayer that = this;
 	this.handler.post(new Runnable() {
 		public void run() {
@@ -71,10 +72,11 @@ public class PlaylistPlayer {
 			    that.mediaPlayer.setLooping(false);
 			    that.mediaPlayer.setOnPreparedListener
 				(new OnPreparedListener() {
-					public void onPrepared(MediaPlayer mp) {
+					public void onPrepared(final MediaPlayer mp) {
 					    that.handler.post(new Runnable() {
 						    public void run() {
 							that.mediaPlayer.start();
+							that.isCurrentlyPlaying = true;
 						    }
 						});
 					}
@@ -82,17 +84,20 @@ public class PlaylistPlayer {
 			    
 			    that.mediaPlayer.setOnCompletionListener
 				(new OnCompletionListener() {
-					public void onCompletion(MediaPlayer mp) {
+					public void onCompletion(final MediaPlayer mp) {
+					    that.isCurrentlyPlaying = false;
+					    that.mediaPlayer.release();
+					    that.mediaPlayer = null;
+					    that.currentSongIndex = 
+						(that.currentSongIndex + 1) %
+						that.songs.size();
+
 					    that.handler.postAtTime(new Runnable() {
 						    public void run() {
-							that.mediaPlayer.release();
-							that.mediaPlayer = null;
-							that.currentSongIndex = 
-							    (that.currentSongIndex + 1) %
-							    that.songs.size();
 							that.play();
 						    }
-						}, SystemClock.uptimeMillis() + that.delayBetweenSongs);
+						}, SystemClock.uptimeMillis() +
+						that.delayBetweenSongs);
 					}
 					
 				    });
@@ -102,8 +107,7 @@ public class PlaylistPlayer {
 				 that.songs.get(that.currentSongIndex));
 			    that.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			    that.mediaPlayer.prepareAsync();
-			    that.isPlaying = true;
-			} else if (that.isPlaying) {
+			} else if (that.isCurrentlyPlaying) {
 			    return;
 			} else {
 			    that.mediaPlayer.start();
@@ -123,9 +127,10 @@ public class PlaylistPlayer {
 		public void run() {
 		    if (that.mediaPlayer == null) {
 		        return;
-		    } else if (that.isPlaying) {
+		    } else if (that.isCurrentlyPlaying) {
 			that.mediaPlayer.pause();
-			that.isPlaying = false;
+			that.isCurrentlyPlaying = false;
+		    } else {
 		    }
 		}
 	    });
@@ -138,10 +143,10 @@ public class PlaylistPlayer {
 		public void run() {
 		    if (that.mediaPlayer == null) {
 		        return;
-		    } else if (that.isPlaying) {
+		    } else if (that.isCurrentlyPlaying) {
 			that.mediaPlayer.seekTo(0);
 			that.mediaPlayer.pause();
-			that.isPlaying = false;
+			that.isCurrentlyPlaying = false;
 		    }
 		}
 	    });
