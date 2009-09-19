@@ -32,10 +32,9 @@ public class PlaylistPlayer {
     private Activity activity;
 
     private int currentSongIndex;
-    private int delayBetweenSongs;
     private List<Uri> songs;
 
-    private boolean isPaused;
+    private boolean isPlaying;
 
     public PlaylistPlayer(final Activity activity,
 			  Handler handler,
@@ -49,8 +48,7 @@ public class PlaylistPlayer {
 	this.handler.post(new Runnable() { public void run() { 
 	    that.songs = record.getSongUris(activity);
 	    that.currentSongIndex = 0;
-	    that.delayBetweenSongs = 2000;
-	    that.isPaused = false;
+	    that.isPlaying = false;
 	}});
 
     }
@@ -62,7 +60,7 @@ public class PlaylistPlayer {
 
 	this.handler.post(new Runnable() {
 		public void run() {
-		    that.isPaused = false;
+		    that.isPlaying = true;
 		    try {
 			if (that.mediaPlayer == null) {
 			    that.mediaPlayer = new MediaPlayer();
@@ -75,14 +73,9 @@ public class PlaylistPlayer {
 					    that.currentSongIndex = 
 						(that.currentSongIndex + 1) %
 						that.songs.size();
-					    that.handler.postAtTime(new Runnable() {
-							public void run() {
-							    if (! that.isPaused) {
-								that.play();
-							    }
-							}
-						    }, SystemClock.uptimeMillis() +
-						that.delayBetweenSongs);
+					    if (that.isPlaying) {
+						that.play();
+					    }
 					}
 				    });
 			    that.mediaPlayer.setDataSource
@@ -107,9 +100,9 @@ public class PlaylistPlayer {
 	final PlaylistPlayer that = this;
 	this.handler.post(new Runnable() {
 		public void run() {
+		    that.isPlaying = false;
 		    if (that.mediaPlayer != null) {
 			that.mediaPlayer.pause();
-			that.isPaused = true;
 		    }
 		}
 	    });
@@ -120,11 +113,11 @@ public class PlaylistPlayer {
 	final PlaylistPlayer that = this;
 	this.handler.post(new Runnable() {
 		public void run() {
+		    that.isPlaying = false;
 		    if (that.mediaPlayer != null) {
 			that.mediaPlayer.release();
 			that.mediaPlayer = null;
 		    }
-		    that.isPaused = false;
 		}
 	    });
     }
