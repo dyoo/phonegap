@@ -201,7 +201,7 @@ public class PlaylistPlayer {
 			that.currentState = State.PAUSED;
 			break;
 		    case DELAYING_BETWEEN_SONGS:
-			that.currentState = State.PAUSED;
+			that.currentState = State.STOPPED;
 			break;
 		    }
 		}
