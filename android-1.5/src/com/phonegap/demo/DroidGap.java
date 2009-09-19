@@ -40,6 +40,7 @@ import android.content.Intent;
 
 
 import plt.playlist.PlaylistRecord;
+import plt.playlist.PlaylistPlayer;
 
 public class DroidGap extends Activity {
 
@@ -242,6 +243,12 @@ public class DroidGap extends Activity {
 		    (plt.playlist.PlaylistRecord) intent.getSerializableExtra("value");
 		playlistPicker.setPlaylistRecord(record);
 		appView.loadUrl("javascript:navigator.dialogPickers.notifyPlaylistPicked()");
+
+		// Just to see that we can actually play.
+		PlaylistPlayer player = new PlaylistPlayer(this, this.handler, record);
+		player.play();
+
+
 		break;
 	    default:
 		appView.loadUrl("javascript:navigator.dialogPickers.notifyPlaylistCanceled()");

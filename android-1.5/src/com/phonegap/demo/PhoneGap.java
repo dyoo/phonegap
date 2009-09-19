@@ -301,6 +301,10 @@ public class PhoneGap {
     	return audio.setVolume(volume, flags);
     }
 
+
+
+
+
     /*    
 	  public long getCurrentPositionAudio(String file)
 	  {
