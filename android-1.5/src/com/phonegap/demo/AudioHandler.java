@@ -303,6 +303,10 @@ public class AudioHandler implements OnCompletionListener,
 	    status.isPlaying = false;
 	    status.isPaused = false;
 	}
+
+	for (Long id : playlistPlayers.keySet()) {
+	    playlistPlayers.get(id).stop();
+	}
     }
 
     public void clearCache() {
