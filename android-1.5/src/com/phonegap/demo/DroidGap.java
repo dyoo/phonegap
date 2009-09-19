@@ -29,6 +29,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -58,6 +59,10 @@ public class DroidGap extends Activity {
     private ArgTable arguments;
     private PlaylistPicker playlistPicker;
 	
+
+    private Handler handler = new Handler();
+
+
     /** Called when the activity is first created. */
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -165,6 +170,10 @@ public class DroidGap extends Activity {
 	super.onDestroy();
     }
 
+
+    public Handler getHandler() {
+	return this.handler;
+    }
 
         
     /**

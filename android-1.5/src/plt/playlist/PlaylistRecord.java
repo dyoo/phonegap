@@ -15,6 +15,9 @@ import android.provider.MediaStore.Audio.Playlists;
 import android.provider.MediaStore.Audio.PlaylistsColumns;
 import android.provider.MediaStore.Audio.Media;
 
+import android.media.MediaPlayer;
+
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
@@ -22,18 +25,31 @@ import java.io.Serializable;
 
 
 public class PlaylistRecord implements Serializable {
-    public long id;
-    public String name;
+    private long id;
+    private String name;
+    private int volume;
+    MediaPlayer mediaPlayer;
+
     public PlaylistRecord(long id, String name) {
 	this.id = id;
 	this.name = name;
+	this.volume = 100;
+	this.mediaPlayer = new MediaPlayer();
+    }
 
+    public long getId() {
+	return this.id;
+    }
+
+    public String getName() { 
+	return this.name;
     }
 
 
     public String toString() {
 	return this.name;
     }
+
 
     public List<Uri> getSongUris(Activity activity) {
 	int[] songIds = getSongListForPlaylist(activity);
@@ -44,6 +60,27 @@ public class PlaylistRecord implements Serializable {
 	return uris;
     }
 
+
+    public void play() {
+    }
+
+    public void pause() {
+    }
+
+    public void stop() {
+    }
+
+
+    public int getVolume() {
+	return this.volume;
+    }
+
+    public void setVolume(int percent) {
+	this.volume = volume;
+	// FILL ME IN
+    }
+
+    
 
     // getSongUri: long -> string
     private Uri getSongUri(int songId) {
