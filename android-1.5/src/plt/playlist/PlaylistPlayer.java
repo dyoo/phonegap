@@ -215,21 +215,34 @@ public class PlaylistPlayer {
 		public void run() {
 		    switch(that.currentState) {
 		    case ABOUT_TO_PLAY:
+			if (that.mediaPlayer != null) {
+			    that.mediaPlayer.release();
+			}
+			that.mediaPlayer = null;
 			that.currentState = State.STOPPED;
 			break;
 		    case STOPPED:
 			break;
 		    case PAUSED:
-			that.mediaPlayer.release();
+			if (that.mediaPlayer != null) {
+			    that.mediaPlayer.release();
+			}
 			that.mediaPlayer = null;
 			that.currentState = State.STOPPED;
 			break;
 		    case PLAYING_A_SONG:
-			that.mediaPlayer.stop();
-			that.mediaPlayer.release();
+			if (that.mediaPlayer != null) {
+			    that.mediaPlayer.stop();
+			    that.mediaPlayer.release();
+			}
 			that.mediaPlayer = null;
+			that.currentState = State.STOPPED;
 			break;
 		    case DELAYING_BETWEEN_SONGS:
+			if (that.mediaPlayer != null) {
+			    that.mediaPlayer.release();
+			}
+			that.mediaPlayer = null;
 			that.currentState = State.STOPPED;
 			break;
 		    }
