@@ -42,9 +42,8 @@ import android.content.Intent;
 import plt.playlist.PlaylistRecord;
 import plt.playlist.PlaylistPlayer;
 
+
 public class DroidGap extends Activity {
-
-
     static final int PLAYLIST_PICKED = 8024;
 
 
@@ -112,7 +111,7 @@ public class DroidGap extends Activity {
     {
     	// The PhoneGap class handles the Notification and Android Specific crap
 	arguments = new ArgTable();
-    	gap = new PhoneGap(this, appView, getAssets(), arguments);
+    	gap = new PhoneGap(this, this.handler, appView, getAssets(), arguments);
     	geo = new GeoBroker(this, appView, arguments);
     	accel = new AccelListener(this, appView, arguments);
     	console = new ConsoleOutput(this, appView);
@@ -245,8 +244,8 @@ public class DroidGap extends Activity {
 		appView.loadUrl("javascript:navigator.dialogPickers.notifyPlaylistPicked()");
 
 		// Just to see that we can actually play.
-		PlaylistPlayer player = new PlaylistPlayer(this, this.handler, record);
-		player.play();
+		// 		PlaylistPlayer player = new PlaylistPlayer(this, this.handler, record);
+		// 		player.play();
 
 
 		break;

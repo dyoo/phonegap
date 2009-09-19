@@ -2,6 +2,7 @@ package plt.playlist;
 
 
 import android.media.MediaPlayer;
+import android.media.AudioManager;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;

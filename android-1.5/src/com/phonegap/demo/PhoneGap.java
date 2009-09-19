@@ -26,6 +26,7 @@ import java.util.TimeZone;
 import java.util.List;
 
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,10 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.util.Log;
 
+
+import plt.playlist.PlaylistRecord;
+
+
 public class PhoneGap {
 	
     private static final String LOG_TAG = "PhoneGap";
@@ -52,7 +57,8 @@ public class PhoneGap {
     public static String version = "0.2";
     public static String platform = "Android";
     //	private Activity mActivity;
-    private Context mCtx;
+    private Activity mCtx;
+    private Handler handler;
     private WebView mAppView;
     private SmsListener mSmsListener;
     private DirectoryManager fileManager;
@@ -63,15 +69,21 @@ public class PhoneGap {
     private PowerManager.WakeLock lock;
     private ArgTable arguments;
     
-    public PhoneGap(Context ctx, WebView appView, AssetManager assets, ArgTable args) {
+    public PhoneGap(Activity ctx,
+		    Handler handler,
+		    WebView appView, 
+		    AssetManager assets, 
+		    ArgTable args) {
 	//		this.mActivity = activity;
 	this.mCtx = ctx;
+	this.handler = handler;
 	this.mAppView = appView;
 	this.arguments = args;
 
+
 	mSmsListener = new SmsListener(ctx,mAppView);
 	fileManager = new DirectoryManager();
-	audio = new AudioHandler("/sdcard/tmprecording.mp3", ctx, mAppView, assets, arguments);
+	audio = new AudioHandler("/sdcard/tmprecording.mp3", ctx, handler, mAppView, assets, arguments);
 	tones = new ToneHandler();
 	power = (PowerManager) ctx.getSystemService(Context.POWER_SERVICE);
 	this.telephony = new Telephony(ctx);
@@ -79,7 +91,7 @@ public class PhoneGap {
     }
 
     public void finish() {
-	((android.app.Activity)mCtx).finish();
+	mCtx.finish();
     }
 	
     public void beep(long pattern)
@@ -265,6 +277,21 @@ public class PhoneGap {
     //    	audio.stopRecording();
     //    }
     
+
+
+    public void playPlaylistRecord(PlaylistRecord rec) {
+	audio.playPlaylistRecord(rec);
+    }
+    public void pausePlaylistRecord(PlaylistRecord rec) {
+	audio.pausePlaylistRecord(rec);
+    }
+
+    public void stopPlaylistRecord(PlaylistRecord rec) {
+	audio.stopPlaylistRecord(rec);
+    }
+
+
+
     public void startPlayingAudio(String file)
     {
     	audio.startPlaying(file);

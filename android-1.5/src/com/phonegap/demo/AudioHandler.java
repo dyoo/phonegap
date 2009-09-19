@@ -8,8 +8,13 @@ import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
 import java.net.URLConnection;
 import java.net.URL;
+import java.util.Map;
 import java.util.HashMap;
 
+import android.os.Handler;
+
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.AssetFileDescriptor;
@@ -23,6 +28,9 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.util.Log;
 import android.webkit.WebView;
 
+import plt.playlist.PlaylistRecord;
+import plt.playlist.PlaylistPlayer;
+
 public class AudioHandler implements OnCompletionListener, 
 				     OnPreparedListener,
 				     OnErrorListener {
@@ -32,12 +40,16 @@ public class AudioHandler implements OnCompletionListener,
     private boolean isPlaying = false;
     private String recording;
     private String saveFile;
-    private Context mCtx;
+    private Activity mCtx;
+    private Handler handler;
     private WebView mAppView;
     private ArgTable arguments;
 
     private HashMap<String, MPlayerStatus> mPlayers_file;
     private HashMap<MediaPlayer, MPlayerStatus> mPlayers_player;
+
+
+    private Map<Long, PlaylistPlayer> playlistPlayers;
 
     //	private boolean isPaused = false;
     private AssetManager assets;
@@ -58,15 +70,23 @@ public class AudioHandler implements OnCompletionListener,
 	}
     }
 	
-    public AudioHandler(String file, Context ctx, WebView appView, AssetManager assets, ArgTable args) {
+    public AudioHandler(String file, 
+			Activity ctx,
+			Handler handler,
+			WebView appView,
+			AssetManager assets,
+			ArgTable args) {
 	//		this.recording = file;
 	this.mCtx = ctx;
+	this.handler = handler;
 	this.mAppView = appView;
 	this.assets = assets;
 	this.arguments = args;
 	volumeControl = (AudioManager) mCtx.getSystemService(Context.AUDIO_SERVICE);
 	mPlayers_file = new HashMap<String, MPlayerStatus>();
 	mPlayers_player = new HashMap<MediaPlayer, MPlayerStatus>();
+
+	this.playlistPlayers = new HashMap<Long, PlaylistPlayer>();
     }
 	
     /*
@@ -129,6 +149,38 @@ public class AudioHandler implements OnCompletionListener,
 	    throw new RuntimeException(e);
 	}
     }
+
+
+    public void playPlaylistRecord(PlaylistRecord record) {
+	if (!playlistPlayers.containsKey(record.getId())) {
+	    PlaylistPlayer player = new PlaylistPlayer(this.mCtx, 
+						       this.handler,
+						       record);
+	    playlistPlayers.put(record.getId(), player);
+	}
+
+	PlaylistPlayer player = playlistPlayers.get(record.getId());
+	player.play();
+	
+    }
+
+    public void pausePlaylistRecord(PlaylistRecord record) {
+	if (playlistPlayers.containsKey(record.getId())) {
+	    PlaylistPlayer player = playlistPlayers.get(record.getId());
+	    player.pause();
+	}
+
+    }
+
+    public void stopPlaylistRecord(PlaylistRecord record) {
+	if (playlistPlayers.containsKey(record.getId())) {
+	    PlaylistPlayer player = playlistPlayers.get(record.getId());
+	    player.stop();
+	}
+    }
+
+
+    
 
 
     protected void startPlaying(String file) {
