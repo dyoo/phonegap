@@ -60,7 +60,6 @@ public class PlaylistRecord implements Serializable {
 
     // getSongUri: long -> string
     private Uri getSongUri(int songId) {
-	System.out.println("in getSongUri, path = " + Media.EXTERNAL_CONTENT_URI + "/" + songId);
 	return Uri.parse(Media.EXTERNAL_CONTENT_URI + "/" + songId);
     }
 

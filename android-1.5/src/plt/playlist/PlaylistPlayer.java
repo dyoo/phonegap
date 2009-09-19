@@ -13,7 +13,7 @@ import android.app.Activity;
 import java.io.IOException;
 import java.util.List;
 
-
+import android.util.Log;
 
 
 
@@ -41,7 +41,8 @@ public class PlaylistPlayer {
     public PlaylistPlayer(final Activity activity,
 			  Handler handler,
 			  final PlaylistRecord record) {
-	System.out.println("Constructing player: ");
+
+	Log.d("PlaylistPlayer", "Constructing player");
 
 	final PlaylistPlayer that = this;
 	this.activity = activity;
@@ -59,7 +60,8 @@ public class PlaylistPlayer {
     // The following methods will queue up a sequence of songs to play.
 
     public void play() {
-	System.out.println("play: isPlaying = " + isPlaying);
+	Log.d("PlaylistPlayer", 
+	      "play: isPlaying = " + isPlaying);
 	final PlaylistPlayer that = this;
 	this.handler.post(new Runnable() {
 		public void run() {
