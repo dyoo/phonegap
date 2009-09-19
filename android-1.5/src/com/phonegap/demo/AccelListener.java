@@ -107,13 +107,20 @@ public class AccelListener implements SensorListener{
 	
     public void stop()
     {
-	//		System.out.println("--- Stopping accel/orient listeners.");
-		
 	sensorManager.unregisterListener(this);
     }
 
+
     public void restart() {
-	// fill me in
+	sensorManager.registerListener(this,
+				       SensorManager.SENSOR_ACCELEROMETER,
+				       SensorManager.SENSOR_DELAY_GAME);
+	sensorManager.registerListener(this,
+				       SensorManager.SENSOR_ORIENTATION,
+				       SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    public void resume() {
     }
 
 

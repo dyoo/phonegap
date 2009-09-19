@@ -458,9 +458,14 @@ public class PhoneGap {
     }
 
 
+    public void resume() {
+    }
+
+
     public void restart() {
 	// FILL ME IN
     }
+
 
 
     public void destroy() {

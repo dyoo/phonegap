@@ -135,6 +135,9 @@ public class DroidGap extends Activity {
 
     public void onResume() {
 	System.out.println("Being resumed");
+	gap.resume();
+	geo.resume();
+	accel.resume();
 	super.onResume();
     }
 

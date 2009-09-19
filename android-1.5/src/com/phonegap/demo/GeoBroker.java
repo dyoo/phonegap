@@ -71,6 +71,11 @@ public class GeoBroker {
 	// FILL ME IN
     }
 
+    public void resume() {
+	// FILL ME IN
+    }
+
+
 
     public void destroy() {
 	for ( GeoListener geo : geoListeners.values() ) {

@@ -26,6 +26,10 @@ import android.util.Log;
 // must run from the handler.
 
 
+// FIXME: currently restricted to play the first song in the playlist over
+// and over.  We need to fix this!
+
+
 public class PlaylistPlayer {
     private MediaPlayer mediaPlayer;
     private Handler handler;
@@ -64,20 +68,20 @@ public class PlaylistPlayer {
 		    try {
 			if (that.mediaPlayer == null) {
 			    that.mediaPlayer = new MediaPlayer();
-			    that.mediaPlayer.setLooping(false);
-			    that.mediaPlayer.setOnCompletionListener
-				(new OnCompletionListener() {
-					public void onCompletion(final MediaPlayer mp) {
-					    mp.release();
-					    that.mediaPlayer = null;
-					    that.currentSongIndex = 
-						(that.currentSongIndex + 1) %
-						that.songs.size();
-					    if (that.isPlaying) {
-						that.play();
-					    }
-					}
-				    });
+			    that.mediaPlayer.setLooping(true);
+			    // that.mediaPlayer.setOnCompletionListener
+// 				(new OnCompletionListener() {
+// 					public void onCompletion(final MediaPlayer mp) {
+// 					    mp.release();
+// 					    that.mediaPlayer = null;
+// 					    that.currentSongIndex = 
+// 						(that.currentSongIndex + 1) %
+// 						that.songs.size();
+// 					    if (that.isPlaying) {
+// 						that.play();
+// 					    }
+// 					}
+// 				    });
 			    that.mediaPlayer.setDataSource
 				(that.activity,
 				 that.songs.get(that.currentSongIndex));
