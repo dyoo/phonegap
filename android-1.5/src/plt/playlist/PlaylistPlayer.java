@@ -72,6 +72,7 @@ public class PlaylistPlayer {
 					public void onCompletion(MediaPlayer mp) {
 					    that.handler.post(new Runnable() {
 						    public void run() {
+							that.mediaPlayer.release();
 							that.mediaPlayer = null;
 							that.currentSongIndex = 
 							    (that.currentSongIndex + 1) %
