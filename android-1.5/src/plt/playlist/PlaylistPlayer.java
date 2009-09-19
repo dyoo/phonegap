@@ -26,18 +26,23 @@ import java.util.List;
 // must run from the handler.
 
 public class PlaylistPlayer {
+    private MediaPlayer mediaPlayer;
+    private Handler handler;
+    private Activity activity;
+
+
     private int volume;
     private int currentSongIndex;
     private int delayBetweenSongs;
     private List<Uri> songs;
-    private Handler handler;
-    private Activity activity;
-    private MediaPlayer mediaPlayer;
-    
+    private boolean isPlaying;
+
 
     public PlaylistPlayer(final Activity activity,
 			  Handler handler,
 			  final PlaylistRecord record) {
+	System.out.println("Constructing player: ");
+
 	final PlaylistPlayer that = this;
 	this.activity = activity;
 	this.handler = handler;
@@ -45,15 +50,16 @@ public class PlaylistPlayer {
 	    that.volume = 100;
 	    that.songs = record.getSongUris(activity);
 	    that.currentSongIndex = 0;
+	    that.isPlaying = false;
+	    that.delayBetweenSongs = 2000;
 	}});
 
-	// delayBetweenSongs is in milliseconds
-	this.delayBetweenSongs = 2000;
     }
 
     // The following methods will queue up a sequence of songs to play.
 
     public void play() {
+	System.out.println("play: isPlaying = " + isPlaying);
 	final PlaylistPlayer that = this;
 	this.handler.post(new Runnable() {
 		public void run() {
@@ -94,7 +100,8 @@ public class PlaylistPlayer {
 				 that.songs.get(that.currentSongIndex));
 			    that.mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			    that.mediaPlayer.prepareAsync();
-			} else if (that.mediaPlayer.isPlaying()) {
+			    that.isPlaying = true;
+			} else if (that.isPlaying) {
 			    return;
 			} else {
 			    that.mediaPlayer.start();
@@ -114,8 +121,10 @@ public class PlaylistPlayer {
 		public void run() {
 		    if (that.mediaPlayer == null) {
 		        return;
+		    } else if (that.isPlaying) {
+			that.mediaPlayer.pause();
+			that.isPlaying = false;
 		    }
-		    that.mediaPlayer.pause();
 		}
 	    });
     }
@@ -127,9 +136,11 @@ public class PlaylistPlayer {
 		public void run() {
 		    if (that.mediaPlayer == null) {
 		        return;
+		    } else if (that.isPlaying) {
+			that.mediaPlayer.seekTo(0);
+			that.mediaPlayer.pause();
+			that.isPlaying = false;
 		    }
-		    that.mediaPlayer.pause();
-		    that.mediaPlayer.seekTo(0);
 		}
 	    });
     }
