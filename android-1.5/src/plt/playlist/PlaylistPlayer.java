@@ -26,7 +26,7 @@ import android.util.Log;
 // must run from the handler.
 
 //
-// uninitialized 
+// stopped           paused
 //    |
 //    V
 // about to play ----> playing a song ----> delaying between songs
@@ -35,7 +35,7 @@ import android.util.Log;
 //                            +-------------------+
 // 
 //
-// with every state having an arrow to "STOPPED"
+// with every state having an arrow to "STOPPED" or PAUSED.
 
 
 public class PlaylistPlayer {
@@ -48,7 +48,7 @@ public class PlaylistPlayer {
     private List<Uri> songs;
 
 
-    private enum State { UNINITIALIZED, ABOUT_TO_PLAY, STOPPED, PLAYING_A_SONG, DELAYING_BETWEEN_SONGS };
+    private enum State { ABOUT_TO_PLAY, PLAYING_A_SONG, DELAYING_BETWEEN_SONGS, STOPPED, PAUSED };
 
     private State currentState;
 
@@ -65,7 +65,7 @@ public class PlaylistPlayer {
 	this.handler.post(new Runnable() { public void run() { 
 	    that.songs = record.getSongUris(activity);
 	    that.currentSongIndex = 0;
-	    that.currentState = State.UNINITIALIZED;
+	    that.currentState = State.STOPPED;
 	    that.delayBetweenSongs = 2000;
 	}});
 
@@ -80,7 +80,6 @@ public class PlaylistPlayer {
 		public void run() {
 		    try {
 			switch(that.currentState) {
-			case UNINITIALIZED:
 			case STOPPED:
 			    if (that.mediaPlayer == null) {
 				that.mediaPlayer = new MediaPlayer();
@@ -91,13 +90,13 @@ public class PlaylistPlayer {
 						that.handler.post(new Runnable() {
 							public void run() {
 							    switch(that.currentState) {
-							    case UNINITIALIZED:
-								break; // This should not happen.
 							    case ABOUT_TO_PLAY:
 								that.mediaPlayer.start();
 								that.currentState = State.PLAYING_A_SONG;
 								break;
 							    case STOPPED:
+								break;
+							    case PAUSED:
 								break;
 							    case PLAYING_A_SONG:
 								break;
@@ -113,28 +112,30 @@ public class PlaylistPlayer {
 				    (new OnCompletionListener() {
 					    public void onCompletion(final MediaPlayer mp) {
 						switch(that.currentState) {
-						case UNINITIALIZED:
-						    break; // shouldn't happen
 						case ABOUT_TO_PLAY:
-						    break; // shouldn't happen
+						    // shouldn't happen: reset to STOPPED.
+						    that.currentState = State.STOPPED;
+						    break; 
 						case STOPPED:
+						    // shouldn't happen: reset to STOPPED.
+						    break;
+						case PAUSED:
+						    // shouldn't happen
 						    break;
 						case PLAYING_A_SONG:
-						    
 						    that.mediaPlayer.release();
 						    that.mediaPlayer = null;
-						    that.currentState = State.DELAYING_BETWEEN_SONGS;
 						    that.currentSongIndex = 
 							(that.currentSongIndex + 1) %
 							that.songs.size();
 						    that.handler.postAtTime(new Runnable() {
 							    public void run() {
 								switch(that.currentState) {
-								case UNINITIALIZED:
-								    break;
 								case ABOUT_TO_PLAY:
 								    break;
 								case STOPPED:
+								    break;
+								case PAUSED:
 								    break;
 								case PLAYING_A_SONG:
 								    break;
@@ -145,6 +146,7 @@ public class PlaylistPlayer {
 							    }
 							}, SystemClock.uptimeMillis() +
 							that.delayBetweenSongs);
+						    that.currentState = State.DELAYING_BETWEEN_SONGS;
 						    break;
 						case DELAYING_BETWEEN_SONGS:
 						    break;// shouldn't happen
@@ -164,7 +166,9 @@ public class PlaylistPlayer {
 			    that.currentState = State.ABOUT_TO_PLAY;
 			    that.mediaPlayer.prepareAsync();
 			    break;
-			    
+			case PAUSED:
+			    that.mediaPlayer.start();
+			    that.currentState = State.PLAYING_A_SONG;
 			case ABOUT_TO_PLAY:
 			    break;
 			case PLAYING_A_SONG:
@@ -186,19 +190,19 @@ public class PlaylistPlayer {
 	this.handler.post(new Runnable() {
 		public void run() {
 		    switch(that.currentState) {
-		    case UNINITIALIZED:
-			break;
 		    case ABOUT_TO_PLAY:
-			that.currentState = State.STOPPED;
+			that.currentState = State.PAUSED;
 			break;
 		    case STOPPED:
 			break;
+		    case PAUSED:
+			break;
 		    case PLAYING_A_SONG:
 			that.mediaPlayer.pause();
-			that.currentState = State.STOPPED;
+			that.currentState = State.PAUSED;
 			break;
 		    case DELAYING_BETWEEN_SONGS:
-			that.currentState = State.STOPPED;
+			that.currentState = State.PAUSED;
 			break;
 		    }
 		}
@@ -211,18 +215,24 @@ public class PlaylistPlayer {
 	this.handler.post(new Runnable() {
 		public void run() {
 		    switch(that.currentState) {
-		    case UNINITIALIZED:
-			break;
 		    case ABOUT_TO_PLAY:
 			that.currentState = State.STOPPED;
+			break;
 		    case STOPPED:
+			break;
+		    case PAUSED:
+			that.mediaPlayer.release();
+			that.mediaPlayer = null;
+			that.currentState = State.STOPPED;
 			break;
 		    case PLAYING_A_SONG:
 			that.mediaPlayer.stop();
 			that.mediaPlayer.release();
 			that.mediaPlayer = null;
+			break;
 		    case DELAYING_BETWEEN_SONGS:
 			that.currentState = State.STOPPED;
+			break;
 		    }
 		}
 	    });
