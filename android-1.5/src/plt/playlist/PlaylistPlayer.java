@@ -7,6 +7,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.app.Activity;
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.List;
 public class PlaylistPlayer {
     private int volume;
     private int currentSongIndex;
+    private int delayBetweenSongs;
     private List<Uri> songs;
     private Handler handler;
     private Activity activity;
@@ -44,6 +46,9 @@ public class PlaylistPlayer {
 	    that.songs = record.getSongUris(activity);
 	    that.currentSongIndex = 0;
 	}});
+
+	// delayBetweenSongs is in milliseconds
+	this.delayBetweenSongs = 2000;
     }
 
     // The following methods will queue up a sequence of songs to play.
@@ -70,7 +75,7 @@ public class PlaylistPlayer {
 			    that.mediaPlayer.setOnCompletionListener
 				(new OnCompletionListener() {
 					public void onCompletion(MediaPlayer mp) {
-					    that.handler.post(new Runnable() {
+					    that.handler.postAtTime(new Runnable() {
 						    public void run() {
 							that.mediaPlayer.release();
 							that.mediaPlayer = null;
@@ -79,7 +84,7 @@ public class PlaylistPlayer {
 							    that.songs.size();
 							that.play();
 						    }
-						});
+						}, SystemClock.uptimeMillis() + that.delayBetweenSongs);
 					}
 					
 				    });
