@@ -117,6 +117,8 @@ public class PlaylistPlayer {
 			    that.mediaPlayer.prepareAsync();
 			} else if (that.isCurrentlyPlaying) {
 			    return;
+			} else if (! that.isStopped) {
+			    return;
 			} else {
 			    that.mediaPlayer.start();
 			}
